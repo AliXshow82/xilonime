@@ -1,9 +1,12 @@
 # ژایلونیمه
 
 ژایلونیمه یک برنامه دسکتاپ برای ساختن و نگهداری لیست شخصی انیمه‌هاست.
-<img width="1280" height="820" alt="xilonimeh-welcome" src="https://github.com/user-attachments/assets/85623fad-2ff9-4e16-99d7-c7a5391d42dc" />
+
 
 نسخه فعلی: **Alpha 0.2**
+<img width="1280" height="820" alt="xilonimeh-welcome" src="https://github.com/user-attachments/assets/9dbb35f9-97cd-404b-b8f4-b784293d8102" />
+داخل برنامه
+<img width="1280" height="822" alt="image" src="https://github.com/user-attachments/assets/e21c9515-9117-4eb1-9bd3-bf1b7ba4de1a" />
 
 ## لینک‌ها
 
