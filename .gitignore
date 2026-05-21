@@ -1,0 +1,21 @@
+node_modules/
+dist/
+release/
+*.log
+
+# Local user data
+anime_vault.db
+anime_vault.db-shm
+anime_vault.db-wal
+*.sqlite
+*.sqlite3
+
+# Backups and exported archives
+anime_vault_backup_*.json
+*.zip
+
+# OS/editor files
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/

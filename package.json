@@ -1,0 +1,51 @@
+{
+  "name": "xilonime",
+  "version": "0.2.0-alpha.0",
+  "description": "ژایلونیمه - alpha desktop anime tracker with persistent local storage",
+  "main": "main.js",
+  "license": "SEE LICENSE IN LICENSE",
+  "author": "Xilo Studio",
+  "scripts": {
+    "start": "electron .",
+    "dev": "electron .",
+    "app": "electron .",
+    "dist": "electron-builder --win nsis"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "electron": "^31.7.0",
+    "electron-builder": "^24.13.3"
+  },
+  "build": {
+    "appId": "ir.xilostudio.xilonimeh",
+    "productName": "ژایلونیمه",
+    "asar": true,
+    "afterPack": "scripts/afterPack.js",
+    "files": [
+      "main.js",
+      "preload.js",
+      "index.html",
+      "assets/**/*",
+      "package.json",
+      "!anime_vault.db*",
+      "!*.zip"
+    ],
+    "win": {
+      "signAndEditExecutable": false,
+      "executableName": "Xilonimeh",
+      "icon": "assets/icon.ico",
+      "target": [
+        "nsis"
+      ],
+      "artifactName": "Xilonimeh-Setup-${version}.${ext}"
+    },
+    "nsis": {
+      "installerIcon": "assets/icon.ico",
+      "uninstallerIcon": "assets/icon.ico",
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true
+    }
+  }
+}
