@@ -8,7 +8,7 @@
 
 - وب‌سایت: [xilostudio.ir](https://xilostudio.ir)
 - سازنده: [alixshow.ir](https://alixshow.ir)
-- دانلود: [GitHub Releases](https://github.com/xilostudio/xilonime/releases/latest)
+- دانلود: [GitHub Releases](https://github.com/AliXshow82/xilonime/releases/latest)
 
 ## ویژگی‌ها
 
