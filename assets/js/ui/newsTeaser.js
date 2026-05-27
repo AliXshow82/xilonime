@@ -1,0 +1,2 @@
+window.XILONIME_UI = window.XILONIME_UI || {};
+window.XILONIME_UI.newsTeaser = "\n<section class=\"soon-strip\" id=\"soonStrip\">\n  <div class=\"soon-copy\">\n    <span class=\"soon-kicker\" id=\"soonKicker\">بزودی</span>\n    <strong id=\"soonTitle\">بلاگ و معرفی انیمه‌های جدید</strong>\n    <small id=\"soonSub\">خبرها، پیشنهادها و معرفی انیمه‌ها در نسخه‌های بعدی فعال می‌شود.</small>\n  </div>\n  <button class=\"soon-badge\" id=\"soonBadge\" type=\"button\" disabled>Coming soon</button>\n</section>";

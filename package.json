@@ -1,6 +1,6 @@
 {
   "name": "xilonime",
-  "version": "0.2.0-alpha.0",
+  "version": "0.30.0-alpha.0",
   "description": "ژایلونیمه - alpha desktop anime tracker with persistent local storage",
   "main": "main.js",
   "license": "SEE LICENSE IN LICENSE",
@@ -11,7 +11,9 @@
     "app": "electron .",
     "dist": "electron-builder --win nsis"
   },
-  "dependencies": {},
+  "dependencies": {
+    "discord-rpc": "^4.0.1"
+  },
   "devDependencies": {
     "electron": "^31.7.0",
     "electron-builder": "^24.13.3"

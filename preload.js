@@ -1,6 +1,12 @@
-const { ipcRenderer } = require('electron');
+const { contextBridge, ipcRenderer } = require('electron');
 
 const APP_TITLE = '\u0698\u0627\u06cc\u0644\u0648\u0646\u06cc\u0645\u0647';
+
+contextBridge.exposeInMainWorld('xiloAPI', {
+  discordSetActivity: (payload) => ipcRenderer.invoke('discord:set-activity', payload),
+  discordClearActivity: () => ipcRenderer.invoke('discord:clear-activity'),
+  openInVlc: (url) => ipcRenderer.invoke('player:open-vlc', url)
+});
 
 window.addEventListener('DOMContentLoaded', () => {
   const style = document.createElement('style');
@@ -180,7 +186,7 @@ window.addEventListener('DOMContentLoaded', () => {
     <div class="xilo-title">
       <img src="assets/logo.png" alt="">
       <span>${APP_TITLE}</span>
-      <small>Alpha 0.2</small>
+      <small>Alpha 0.30</small>
     </div>
     <div class="xilo-window-controls">
       <button class="xilo-window-button minimize" type="button" data-action="minimize" title="Minimize" aria-label="Minimize"></button>
