@@ -1,45 +1,94 @@
-# ژایلونیمه
+# Xilonimeh 🎌
 
-ژایلونیمه یک برنامه دسکتاپ برای ساختن و نگهداری لیست شخصی انیمه‌هاست.
+<p align="center">
+  <img src="https://raw.githubusercontent.com/simple-icons/simple-icons/develop/icons/github.svg" width="70" alt="Xilonimeh Logo">
+</p>
 
-نسخه فعلی: **Alpha 0.30**
+<p align="center">
+  A modern desktop application for building and managing your personal anime library.
+</p>
 
-## لینک‌ها
+<p align="center">
+  <img src="https://img.shields.io/badge/status-under%20construction-orange?style=for-the-badge">
+  <img src="https://img.shields.io/badge/version-Alpha%200.30-blue?style=for-the-badge">
+  <img src="https://img.shields.io/badge/platform-Windows-black?style=for-the-badge">
+</p>
 
-- وب‌سایت: [xilostudio.ir](https://xilostudio.ir)
-- سازنده: [alixshow.ir](https://alixshow.ir)
-- دانلود: [GitHub Releases](https://github.com/AliXshow82/xilonime/releases/latest)
+---
 
-## ویژگی‌ها
+## 🌐 Links
 
-- برنامه نصب‌شدنی ویندوز با Electron
-- ذخیره‌سازی محلی روی سیستم کاربر
-- شروع کاملا خالی در نصب اول
-- پنجره سفارشی بدون قاب پیش‌فرض ویندوز
-- فونت فارسی Vazir به صورت محلی
-- آیکون و لوگوی اختصاصی برنامه
+> ⚠️ All websites are currently under construction.
 
-## اجرا برای توسعه
+- 🌍 Website: https://xilostudio.ir *(Under Construction)*
+- 👨‍💻 Developer: https://alixshow.ir *(Under Construction)*
+- ⬇️ Download: https://github.com/AliXshow82/xilonime/releases/latest
+- 🛠️ GitHub Repository: https://github.com/AliXshow82/xilonime
+
+---
+
+## ✨ Features
+
+- Electron-based Windows desktop application
+- Local offline data storage
+- Clean first-launch experience
+- Custom frameless window design
+- Embedded Vazir font support
+- Custom icons and branding
+- Lightweight and fast interface
+- Personal anime tracking system
+
+---
+
+## 🚧 Project Status
+
+Xilonimeh is currently in active alpha development.
+
+Some features, UI elements, and internal structures may change in future versions.
+
+---
+
+## 🖥️ Development Setup
+
+Install dependencies:
 
 ```bash
 npm install
+```
+
+Start development mode:
+
+```bash
 npm start
 ```
 
-## ساخت فایل نصبی
+---
+
+## 📦 Build Installer
+
+Create Windows installer:
 
 ```bash
 npm run dist
 ```
 
-خروجی نصب‌کننده:
+Installer output:
 
 ```text
 dist/Xilonimeh-Setup-0.30.0-alpha.0.exe
 ```
 
-## مجوز استفاده
+---
 
-سورس این پروژه قابل مشاهده است، اما آزاد برای کپی‌برداری کامل یا استفاده بدون ذکر منبع نیست.
+## 📜 License
 
-استفاده، تغییر یا انتشار نسخه مشتق‌شده فقط با رعایت شرایط فایل [LICENSE](LICENSE) مجاز است. استفاده از نام، برند، لوگو یا هویت «ژایلونیمه»، «Xilonimeh» و «Xilo Studio» بدون اجازه کتبی مجاز نیست.
+The source code of this project is publicly viewable, but it is **not open for unrestricted copying or redistribution**.
+
+Usage, modification, or redistribution of derivative versions is only allowed under the conditions defined in the [LICENSE](LICENSE) file.
+
+The names, branding, logos, and identities of:
+
+- Xilonimeh
+- Xilo Studio
+
+may not be used without written permission.
