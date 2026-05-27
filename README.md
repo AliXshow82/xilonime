@@ -33,10 +33,8 @@
 - Local offline data storage
 - Clean first-launch experience
 - Custom frameless window design
-- Embedded Vazir font support
 - Custom icons and branding
 - Lightweight and fast interface
-- Personal anime tracking system
 
 ---
 
