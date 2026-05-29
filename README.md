@@ -24,6 +24,8 @@
 - 👨‍💻 Developer: https://alixshow.ir *(Under Construction)*
 - ⬇️ Download: https://github.com/AliXshow82/xilonime/releases/latest
 - 🛠️ GitHub Repository: https://github.com/AliXshow82/xilonime
+- Temporary and buggy: https://xilonime.pages.dev/ 
+- 
 
 ---
 
