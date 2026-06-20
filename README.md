@@ -10,7 +10,7 @@
 
 <p align="center">
   <img src="https://img.shields.io/badge/status-under%20construction-orange?style=for-the-badge">
-  <img src="https://img.shields.io/badge/version-Alpha%200.30-blue?style=for-the-badge">
+  <img src="https://img.shields.io/badge/version-Alpha%200.32.5-blue?style=for-the-badge">
   <img src="https://img.shields.io/badge/platform-Windows-black?style=for-the-badge">
 </p>
 
@@ -20,7 +20,7 @@
 
 > ⚠️ All websites are currently under construction.
 
-- 🌍 Website: https://xilostudio.ir *(Under Construction)*
+- 🌍 Website: https://xilostudio.ir 
 - 👨‍💻 Developer: https://alixshow.ir *(Under Construction)*
 - ⬇️ Download: https://github.com/AliXshow82/xilonime/releases/latest
 - 🛠️ GitHub Repository: https://github.com/AliXshow82/xilonime
