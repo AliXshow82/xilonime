@@ -24,3 +24,9 @@ Thumbs.db
 data/xilonime-db.json
 server/data/
 server/.env
+
+# Server and deploy files (kept local, not open source)
+server/
+deploy-server.sh
+nginx-xilonime.conf
+DEPLOY-XILONIME.md
