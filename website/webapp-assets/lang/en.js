@@ -3,7 +3,7 @@ window.XILONIME_LANGS["en"] = {
   "dir": "ltr",
   "htmlLang": "en",
   "appName": "Xilonimeh",
-  "subtitle": "Alpha 0.32.5 · My personal anime list",
+  "subtitle": "Alpha 0.36.0 · My personal anime list",
   "addAnime": "Add anime",
   "export": "Export",
   "import": "Import",
@@ -38,7 +38,7 @@ window.XILONIME_LANGS["en"] = {
   "welcomeKicker": "Built for the anime community",
   "welcomeHeadline": "A personal notebook for your anime world",
   "welcomeCopy": "This app was made to help anime fans keep their watch experience organized. It is still early, but it will become better, prettier, and more useful step by step.",
-  "welcomeVersion": "Current version is <span class=\"version-pill\">Alpha 0.32.5</span>. A fresh install starts empty; use “Add anime” to add your first item.",
+  "welcomeVersion": "Current version is <span class=\"version-pill\">Alpha 0.36.0</span>. A fresh install starts empty; use “Add anime” to add your first item.",
   "later": "Later",
   "startAdd": "Start and add anime",
   "addTitle": "Add <span>new anime</span>",
@@ -200,12 +200,12 @@ window.XILONIME_LANGS["en"] = {
     "title": "Announcements <span>& Changelog</span>",
     "cardTitle": "Test announcement",
     "cardText": "This section is ready for future server-side messages. For now it shows local test announcements.",
-    "changeTitle": "Change Log - Alpha 0.32.5",
+    "changeTitle": "Change Log - Alpha 0.36.0",
     "changeText": "See what changed from Alpha 0.20 through the current build.",
     "changeButton": "Open changelog"
   },
   "changelog": {
-    "title": "Changelog <span>Alpha 0.20 - 0.32.5</span>",
+    "title": "Changelog <span>Alpha 0.20 - 0.36.0</span>",
     "done": "Got it",
     "versions": [
       {
@@ -247,6 +247,16 @@ window.XILONIME_LANGS["en"] = {
           "Changed anime search to use the Xilonimeh API first, with AniList as fallback.",
           "Added the server/API plan for one shared database updated every 2 days."
         ]
+      },
+      {
+        "version": "Alpha 0.36.0",
+        "items": [
+          "Rebuilt the desktop app with Tauri: a ~3 MB installer that starts faster and uses far less memory.",
+          "Automatic, signed updates: new versions appear in the title bar and install with one click.",
+          "A completely new design: sidebar with status filters and counts, Continue watching row and poster cards.",
+          "The app starts in English; your old list is carried over from the previous version.",
+          "Better phone layout for the web app."
+        ]
       }
     ]
   },
@@ -265,5 +275,12 @@ window.XILONIME_LANGS["en"] = {
     "selected": "Anime info filled from database.",
     "unknown": "Unknown",
     "updatedApi": "Updated from Xilonimeh database."
+  },
+  "nav": {
+    "library": "Library",
+    "tools": "Tools",
+    "blog": "Blog",
+    "continue": "Continue watching",
+    "myLibrary": "My library"
   }
 };

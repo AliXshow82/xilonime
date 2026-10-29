@@ -1,38 +1,56 @@
 <!DOCTYPE html>
-<html lang="fa" dir="rtl">
+<html lang="en" dir="ltr">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>بلاگ ژایلونیمه | Xilonimeh</title>
-  <meta name="description" content="بلاگ ژایلونیمه برای خبرها، معرفی انیمه‌ها و تغییرات نسخه‌ها">
-  <link rel="stylesheet" href="assets/css/style.css?v=0.32.5-sync2">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Blog | Xilonimeh</title>
+  <meta name="description" content="Xilonimeh news, anime picks and release notes.">
+  <meta name="theme-color" content="#07070a">
+  <link rel="icon" href="assets/icon.ico">
+  <link rel="stylesheet" href="assets/css/style.css?v=0.36.0">
 </head>
-<body>
-  <canvas id="fx"></canvas>
-  <div class="grid"></div>
-  <div class="noise"></div>
+<body data-page="blog">
+  <canvas id="scene" aria-hidden="true"></canvas>
+  <div class="vignette" aria-hidden="true"></div>
+  <div class="noise" aria-hidden="true"></div>
 
-  <main class="wrap">
-    <div id="site-header"></div>
+  <div id="site-header"></div>
 
-    <section class="blog-page">
-      <div class="blog-band reveal">
-        <div>
-          <span class="eyebrow small">Xilonimeh Blog</span>
-          <h1 class="blog-page-title">بلاگ و معرفی انیمه‌های جدید</h1>
-          <p class="blog-page-text">اینجا برای خبرهای ژایلونیمه، معرفی انیمه‌های تازه، پیشنهادهای تماشا و changelog های مهم سایت آماده شده است.</p>
-        </div>
-        <div class="blog-cards">
-          <article><b>معرفی فصل‌های جدید</b><span>بزودی از سمت سرور</span></article>
-          <article><b>راهنمای نسخه 0.32.5</b><span>اکانت واقعی، API و دیتابیس مشترک</span></article>
-          <article><b>تغییرات آینده</b><span>پست‌ها بعدا از سمت سرور مدیریت می‌شوند</span></article>
-        </div>
-      </div>
+  <main>
+    <section class="page-hero">
+      <p class="eyebrow" data-i18n="blogEyebrow">Blog</p>
+      <h1 data-i18n="blogTitle">News, picks and release notes.</h1>
+      <p data-i18n="blogText">Xilonimeh updates, fresh anime recommendations and what changed in each version.</p>
     </section>
 
-    <div id="site-footer"></div>
+    <section class="blog-grid">
+      <article class="post-card">
+        <span class="tag" data-i18n="post1Tag">Release</span>
+        <div>
+          <h2 data-i18n="post1Title">Alpha 0.36: a new look, a lighter self-updating app</h2>
+          <p data-i18n="post1Text">The desktop app moved from Electron to Tauri. The installer dropped to about 3 MB and new versions now install themselves.</p>
+        </div>
+      </article>
+      <article class="post-card">
+        <span class="tag" data-i18n="post2Tag">Guide</span>
+        <div>
+          <h2 data-i18n="post2Title">One account, every device</h2>
+          <p data-i18n="post2Text">Create an account to keep the same list on your PC and in the web app.</p>
+        </div>
+      </article>
+      <article class="post-card">
+        <span class="tag" data-i18n="post3Tag">Coming soon</span>
+        <div>
+          <h2 data-i18n="post3Title">Seasonal anime picks</h2>
+          <p data-i18n="post3Text">Each season we'll share the new shows worth adding to your list.</p>
+        </div>
+      </article>
+    </section>
   </main>
 
-  <script type="module" src="assets/js/app.js?v=0.32.5-sync2"></script>
+  <div id="site-footer"></div>
+
+  <script type="module" src="assets/js/site.js?v=0.36.0"></script>
+  <script type="module" src="assets/js/backdrop.js?v=0.36.0"></script>
 </body>
 </html>

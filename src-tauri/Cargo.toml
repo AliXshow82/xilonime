@@ -1,0 +1,32 @@
+[package]
+name = "xilonimeh"
+version = "0.33.0-alpha.0"
+description = "Xilonimeh desktop anime tracker"
+authors = ["Xilo Studio"]
+license-file = "../LICENSE"
+edition = "2021"
+
+[lib]
+name = "xilonimeh_lib"
+crate-type = ["staticlib", "cdylib", "rlib"]
+
+[build-dependencies]
+tauri-build = { version = "2", features = [] }
+
+[dependencies]
+tauri = { version = "2", features = [] }
+tauri-plugin-opener = "2"
+tauri-plugin-process = "2"
+tauri-plugin-updater = "2"
+tauri-plugin-http = "2"
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+discord-rich-presence = "1"
+rusty-leveldb = "4"
+
+[profile.release]
+codegen-units = 1
+lto = true
+opt-level = "s"
+panic = "abort"
+strip = true

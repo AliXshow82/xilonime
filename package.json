@@ -1,55 +1,16 @@
 {
   "name": "xilonime",
-  "version": "0.32.5-alpha.0",
+  "version": "0.36.0-alpha.0",
   "description": "ژایلونیمه - alpha desktop anime tracker with persistent local storage",
-  "main": "main.js",
   "license": "SEE LICENSE IN LICENSE",
   "author": "Xilo Studio",
   "scripts": {
-    "start": "electron .",
-    "dev": "electron .",
-    "app": "electron .",
-    "dist": "electron-builder --win nsis"
-  },
-  "dependencies": {
-    "discord-rpc": "^4.0.1"
+    "dev": "tauri dev",
+    "build": "tauri build",
+    "release": "node scripts/release.js",
+    "release:publish": "node scripts/release.js --publish"
   },
   "devDependencies": {
-    "electron": "^31.7.0",
-    "electron-builder": "^24.13.3"
-  },
-  "build": {
-    "appId": "ir.xilostudio.xilonimeh",
-    "productName": "ژایلونیمه",
-    "asar": true,
-    "afterPack": "scripts/afterPack.js",
-    "files": [
-      "main.js",
-      "preload.js",
-      "index.html",
-      "assets/**/*",
-      "package.json",
-      "!anime_vault.db*",
-      "!*.zip"
-    ],
-    "win": {
-      "signAndEditExecutable": false,
-      "executableName": "Xilonimeh",
-      "icon": "assets/icon.ico",
-      "target": [
-        "nsis"
-      ],
-      "artifactName": "Xilonimeh-Setup-${version}.${ext}"
-    },
-    "nsis": {
-      "installerIcon": "assets/icon.ico",
-      "uninstallerIcon": "assets/icon.ico",
-      "installerSidebar": "build/installer-sidebar.bmp",
-      "uninstallerSidebar": "build/installer-sidebar.bmp",
-      "oneClick": false,
-      "allowToChangeInstallationDirectory": true,
-      "createDesktopShortcut": true,
-      "createStartMenuShortcut": true
-    }
+    "@tauri-apps/cli": "^2.12.4"
   }
 }

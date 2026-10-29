@@ -3,7 +3,7 @@ window.XILONIME_LANGS["ja"] = {
   "dir": "ltr",
   "htmlLang": "ja",
   "appName": "Xilonimeh",
-  "subtitle": "Alpha 0.32.5 · 私の個人アニメリスト",
+  "subtitle": "Alpha 0.36.0 · 私の個人アニメリスト",
   "addAnime": "アニメを追加",
   "export": "エクスポート",
   "import": "インポート",
@@ -38,7 +38,7 @@ window.XILONIME_LANGS["ja"] = {
   "welcomeKicker": "アニメコミュニティのために制作",
   "welcomeHeadline": "あなたのアニメ世界の個人ノート",
   "welcomeCopy": "このアプリはアニメ視聴を整理するために作られました。まだ初期版ですが、少しずつ美しく便利になっていきます。",
-  "welcomeVersion": "現在のバージョンは <span class=\"version-pill\">Alpha 0.32.5</span> です。初回インストールは空のリストから始まります。「アニメを追加」で最初の項目を追加してください。",
+  "welcomeVersion": "現在のバージョンは <span class=\"version-pill\">Alpha 0.36.0</span> です。初回インストールは空のリストから始まります。「アニメを追加」で最初の項目を追加してください。",
   "later": "あとで",
   "startAdd": "開始して追加",
   "addTitle": "<span>新しいアニメ</span>を追加",
@@ -200,12 +200,12 @@ window.XILONIME_LANGS["ja"] = {
     "title": "お知らせ <span>と変更履歴</span>",
     "cardTitle": "テストお知らせ",
     "cardText": "このエリアは今後のサーバー配信メッセージ用です。現在はローカルのテスト表示です。",
-    "changeTitle": "変更履歴 - Alpha 0.32.5",
+    "changeTitle": "変更履歴 - Alpha 0.36.0",
     "changeText": "Alpha 0.20 から現在のビルドまでの変更を確認できます。",
     "changeButton": "変更履歴を開く"
   },
   "changelog": {
-    "title": "変更履歴 <span>Alpha 0.20 - 0.32.5</span>",
+    "title": "変更履歴 <span>Alpha 0.20 - 0.36.0</span>",
     "done": "OK",
     "versions": [
       {
@@ -247,6 +247,16 @@ window.XILONIME_LANGS["ja"] = {
           "アニメ検索は Xilonimeh API を優先し、AniList を fallback に変更。",
           "2日ごと更新の共通データベース/API構成を追加。"
         ]
+      },
+      {
+        "version": "Alpha 0.36.0",
+        "items": [
+          "Tauri でデスクトップアプリを作り直しました：約 3 MB のインストーラー、起動が速く、メモリ使用量も大幅に削減。",
+          "署名付き自動アップデート：新しいバージョンがタイトルバーに表示され、ワンクリックでインストール。",
+          "全く新しいデザイン：ステータスフィルターと件数付きのサイドバー、「視聴を続ける」行、ポスターカード。",
+          "初回は英語で起動し、以前のリストは前のバージョンから引き継がれます。",
+          "ウェブ版のスマホ表示を改善。"
+        ]
       }
     ]
   },
@@ -265,5 +275,12 @@ window.XILONIME_LANGS["ja"] = {
     "selected": "データベースからアニメ情報を入力しました。",
     "unknown": "不明",
     "updatedApi": "Xilonimeh データベースから更新しました。"
+  },
+  "nav": {
+    "library": "ライブラリ",
+    "tools": "ツール",
+    "blog": "ブログ",
+    "continue": "視聴を続ける",
+    "myLibrary": "マイライブラリ"
   }
 };

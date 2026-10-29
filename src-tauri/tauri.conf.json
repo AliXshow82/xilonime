@@ -1,0 +1,56 @@
+{
+  "$schema": "https://schema.tauri.app/config/2",
+  "productName": "Xilonimeh",
+  "mainBinaryName": "Xilonimeh",
+  "version": "../package.json",
+  "identifier": "ir.xilostudio.xilonimeh",
+  "build": {
+    "frontendDist": "../web-dist",
+    "beforeDevCommand": "node scripts/prepare-web.js",
+    "beforeBuildCommand": "node scripts/prepare-web.js"
+  },
+  "app": {
+    "withGlobalTauri": true,
+    "windows": [],
+    "security": {
+      "csp": null
+    }
+  },
+  "bundle": {
+    "active": true,
+    "targets": ["nsis"],
+    "createUpdaterArtifacts": true,
+    "publisher": "Xilo Studio",
+    "copyright": "Xilo Studio",
+    "shortDescription": "ژایلونیمه - Anime tracker",
+    "icon": [
+      "icons/32x32.png",
+      "icons/128x128.png",
+      "icons/128x128@2x.png",
+      "icons/icon.ico"
+    ],
+    "windows": {
+      "webviewInstallMode": {
+        "type": "downloadBootstrapper",
+        "silent": true
+      },
+      "nsis": {
+        "installerIcon": "icons/icon.ico",
+        "sidebarImage": "../build/installer-sidebar.bmp",
+        "installMode": "currentUser",
+        "displayLanguageSelector": false
+      }
+    }
+  },
+  "plugins": {
+    "updater": {
+      "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IDUwMzk2RjNCQTI1NDEzQ0UKUldUT0UxU2lPMjg1VURlb1ZtUHR0eWo1dmtPdlFCYUgwRzZrUU8xRUdMcVk5R2dXeFRDWExFeDMK",
+      "endpoints": [
+        "https://github.com/AliXshow82/xilonime/releases/latest/download/latest.json"
+      ],
+      "windows": {
+        "installMode": "passive"
+      }
+    }
+  }
+}

@@ -3,7 +3,7 @@ window.XILONIME_LANGS["zh"] = {
   "dir": "ltr",
   "htmlLang": "zh-CN",
   "appName": "Xilonimeh",
-  "subtitle": "Alpha 0.32.5 · 我的个人动漫列表",
+  "subtitle": "Alpha 0.36.0 · 我的个人动漫列表",
   "addAnime": "添加动漫",
   "export": "导出",
   "import": "导入",
@@ -38,7 +38,7 @@ window.XILONIME_LANGS["zh"] = {
   "welcomeKicker": "为动漫社区而做",
   "welcomeHeadline": "属于你的动漫世界笔记本",
   "welcomeCopy": "这个应用用于帮助动漫爱好者整理观看体验。它仍处于早期阶段，但会一步步变得更好、更漂亮、更实用。",
-  "welcomeVersion": "当前版本是 <span class=\"version-pill\">Alpha 0.32.5</span>。首次安装会从空列表开始；点击“添加动漫”添加第一个项目。",
+  "welcomeVersion": "当前版本是 <span class=\"version-pill\">Alpha 0.36.0</span>。首次安装会从空列表开始；点击“添加动漫”添加第一个项目。",
   "later": "稍后",
   "startAdd": "开始并添加",
   "addTitle": "添加<span>新动漫</span>",
@@ -200,12 +200,12 @@ window.XILONIME_LANGS["zh"] = {
     "title": "公告 <span>与更新日志</span>",
     "cardTitle": "测试公告",
     "cardText": "该区域已为未来的服务器公告准备好，目前显示本地测试公告。",
-    "changeTitle": "更新日志 - Alpha 0.32.5",
+    "changeTitle": "更新日志 - Alpha 0.36.0",
     "changeText": "查看从 Alpha 0.20 到当前版本的变化。",
     "changeButton": "打开更新日志"
   },
   "changelog": {
-    "title": "更新日志 <span>Alpha 0.20 - 0.32.5</span>",
+    "title": "更新日志 <span>Alpha 0.20 - 0.36.0</span>",
     "done": "知道了",
     "versions": [
       {
@@ -247,6 +247,16 @@ window.XILONIME_LANGS["zh"] = {
           "动漫搜索优先使用 Xilonimeh API，AniList 作为备用。",
           "加入服务器/API 方案：共享数据库每 2 天更新一次。"
         ]
+      },
+      {
+        "version": "Alpha 0.36.0",
+        "items": [
+          "使用 Tauri 重建桌面应用：安装包约 3 MB，启动更快，内存占用大幅降低。",
+          "自动签名更新：新版本会显示在标题栏，一键安装。",
+          "全新设计：带状态筛选和计数的侧边栏、“继续观看”行和海报卡片。",
+          "应用默认使用英语启动，旧版本的清单会自动迁移。",
+          "改进了网页版在手机上的布局。"
+        ]
       }
     ]
   },
@@ -265,5 +275,12 @@ window.XILONIME_LANGS["zh"] = {
     "selected": "已从数据库填入动漫信息。",
     "unknown": "未知",
     "updatedApi": "已从 Xilonimeh 数据库更新。"
+  },
+  "nav": {
+    "library": "片库",
+    "tools": "工具",
+    "blog": "博客",
+    "continue": "继续观看",
+    "myLibrary": "我的片库"
   }
 };

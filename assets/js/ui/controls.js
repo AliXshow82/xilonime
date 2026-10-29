@@ -1,2 +1,26 @@
 window.XILONIME_UI = window.XILONIME_UI || {};
-window.XILONIME_UI.controls = "<!-- Controls -->\n    <div class=\"controls\">\n      <div class=\"search-wrap\">\n        <span class=\"search-icon\">🔍</span>\n        <input type=\"search\" class=\"search-input\" id=\"searchInput\" name=\"xilonime_anime_search\" autocomplete=\"off\" autocapitalize=\"none\" spellcheck=\"false\" inputmode=\"search\" placeholder=\"جستجو در انیمه‌ها...\" oninput=\"scheduleRender()\">\n      </div>\n      <div class=\"filter-tabs\" id=\"filterTabs\">\n        <button class=\"filter-tab active\" data-filter=\"all\" onclick=\"setFilter('all',this)\">همه</button>\n        <button class=\"filter-tab\" data-filter=\"watching\" onclick=\"setFilter('watching',this)\">در حال تماشا</button>\n        <button class=\"filter-tab\" data-filter=\"completed\" onclick=\"setFilter('completed',this)\">تموم شده</button>\n        <button class=\"filter-tab\" data-filter=\"planned\" onclick=\"setFilter('planned',this)\">برنامه آینده</button>\n        <button class=\"filter-tab\" data-filter=\"paused\" onclick=\"setFilter('paused',this)\">متوقف شده</button>\n        <button class=\"filter-tab\" data-filter=\"dropped\" onclick=\"setFilter('dropped',this)\">رها شده</button>\n      </div>\n      <select class=\"sort-select\" id=\"sortSelect\" onchange=\"renderList()\">\n        <option value=\"date_desc\">جدیدترین</option>\n        <option value=\"date_asc\">قدیمی‌ترین</option>\n        <option value=\"name\">نام (الف-ی)</option>\n        <option value=\"rating\">بالاترین امتیاز</option>\n        <option value=\"progress\">پیشرفت</option>\n      </select>\n      <div class=\"view-toggle\">\n        <button class=\"view-btn active\" id=\"gridViewBtn\" onclick=\"setView('grid')\" data-tip=\"نمای شبکه\">▦</button>\n        <button class=\"view-btn\" id=\"listViewBtn\" onclick=\"setView('list')\" data-tip=\"نمای لیست\">☰</button>\n      </div>\n    </div>";
+// Library heading with search, sort and view switch. The status filters live in the sidebar.
+window.XILONIME_UI.controls = `
+<section class="library-head">
+  <div class="section-head">
+    <h2 class="section-title" id="libraryTitle">My library</h2>
+    <span class="section-count" id="libraryCount"></span>
+  </div>
+  <div class="controls">
+    <div class="search-wrap">
+      <span class="search-icon i-search"></span>
+      <input type="search" class="search-input" id="searchInput" name="xilonime_anime_search" autocomplete="off" autocapitalize="none" spellcheck="false" inputmode="search" placeholder="Search anime..." oninput="scheduleRender()">
+    </div>
+    <select class="sort-select" id="sortSelect" onchange="renderList()">
+      <option value="date_desc">Newest</option>
+      <option value="date_asc">Oldest</option>
+      <option value="name">Name</option>
+      <option value="rating">Top rated</option>
+      <option value="progress">Progress</option>
+    </select>
+    <div class="view-toggle">
+      <button class="view-btn active" id="gridViewBtn" onclick="setView('grid')" data-tip="Grid view" aria-label="Grid view"><span class="i-grid"></span></button>
+      <button class="view-btn" id="listViewBtn" onclick="setView('list')" data-tip="List view" aria-label="List view"><span class="i-list"></span></button>
+    </div>
+  </div>
+</section>`;

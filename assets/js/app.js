@@ -1,8 +1,8 @@
 document.getElementById('xilonime-root').innerHTML = window.XILONIME_UI.shell;
 
 // ─── State ──────────────────────────────────────────────────────
-const APP_VERSION = '0.32.5-alpha.0';
-const APP_VERSION_LABEL = 'Alpha 0.32.5';
+const APP_VERSION = '0.36.0-alpha.0';
+const APP_VERSION_LABEL = 'Alpha 0.36.0';
 const STORAGE_KEY = 'xiloAnimeVault.animes.alpha02';
 const WELCOME_KEY = 'xiloAnimeVault.welcome.alpha02';
 const LANGUAGE_KEY = 'xiloAnimeVault.language.alpha02';
@@ -34,7 +34,10 @@ let lastLibrarySignature = '';
 let syncUnauthorizedShown = false;
 
 const I18N = window.XILONIME_LANGS || {};
-const IS_WEB_APP = location.protocol.startsWith('http') && location.pathname.endsWith('/my-list.html');
+// The Tauri build is served from http://tauri.localhost, so "http" alone does not mean the website.
+const IS_DESKTOP = location.hostname === 'tauri.localhost' || location.protocol === 'tauri:';
+const IS_SITE = location.protocol.startsWith('http') && !IS_DESKTOP;
+const IS_WEB_APP = IS_SITE && location.pathname.endsWith('/my-list.html');
 
 function t(key, vars = {}) {
   const parts = key.split('.');
@@ -102,7 +105,16 @@ function applyLanguage() {
   ['statsTotal','statsCompleted','statsWatching','statsEpisodes'].forEach((key, i) => { if (statLabels[i]) statLabels[i].textContent = t(key); });
   ['statsTotalSub','statsCompletedSub','statsWatchingSub','statsEpisodesSub'].forEach((key, i) => { if (statSubs[i]) statSubs[i].textContent = t(key); });
   const search = document.getElementById('searchInput'); if (search) search.placeholder = t('search');
-  document.querySelectorAll('.filter-tab').forEach(btn => { btn.textContent = t('filters.' + btn.dataset.filter); });
+  document.querySelectorAll('.filter-tab').forEach(btn => {
+    const label = btn.querySelector('.filter-label') || btn;
+    label.textContent = t('filters.' + btn.dataset.filter);
+  });
+  setText('navLibraryTitle', t('nav.library'));
+  setText('navToolsTitle', t('nav.tools'));
+  setText('navBlogText', t('nav.blog'));
+  setText('sidebarAddText', lang.addAnime);
+  setText('continueTitle', t('nav.continue'));
+  setText('libraryTitle', t('nav.myLibrary'));
   const sortSelect = document.getElementById('sortSelect'); if (sortSelect) [...sortSelect.options].forEach(option => option.textContent = t('sort.' + option.value));
   const grid = document.getElementById('gridViewBtn'); if (grid) grid.dataset.tip = t('gridTip');
   const list = document.getElementById('listViewBtn'); if (list) list.dataset.tip = t('listTip');
@@ -263,7 +275,7 @@ function isAuthenticated() { return !!currentSession?.token; }
 function isGuestSession() { return currentSession?.mode === 'guest'; }
 function isAccountSession() { return isAuthenticated() && currentSession?.mode !== 'guest'; }
 function getApiBase() {
-  const siteApi = location.protocol.startsWith('http') ? `${location.origin}/api` : 'https://xilonime.ir/api';
+  const siteApi = IS_SITE ? `${location.origin}/api` : 'https://xilonime.ir/api';
   return String(localStorage.getItem('xiloAnimeVault.apiBase') || siteApi).replace(/\/+$/, '');
 }
 function requireAuth() {
@@ -479,13 +491,13 @@ async function loginWithDiscord() {
   try {
     const data = await apiRequest('/config', { method: 'GET' });
     if (!data.discordConfigured) { showNotif('Discord login is not configured', '!'); return; }
-    const returnTo = location.protocol.startsWith('http') && location.pathname.endsWith('/my-list.html')
+    const returnTo = IS_WEB_APP
       ? location.pathname
       : '/login.html';
     const startPath = '/auth/discord/start?json=1&returnTo=' + encodeURIComponent(returnTo);
     const start = await apiRequest(startPath, { method: 'GET' });
     const url = start.url || (getApiBase() + '/auth/discord/start?returnTo=' + encodeURIComponent(returnTo));
-    if (location.protocol.startsWith('http')) location.href = url;
+    if (IS_SITE) location.href = url;
     else window.open(url, '_blank', 'noopener,noreferrer');
   } catch (error) {
     showNotif(error.message || 'Discord login failed', '!');
@@ -550,7 +562,7 @@ function afterAuthReady() {
 }
 function openBlogUrl() {
   if (!requireAuth()) return;
-  const url = location.protocol.startsWith('http') ? `${location.origin}/blog.html` : 'https://xilonime.ir/blog.html';
+  const url = IS_SITE ? `${location.origin}/blog.html` : 'https://xilonime.ir/blog.html';
   window.open(url, '_blank', 'noopener,noreferrer');
 }
 function openAccountUrl() { window.open('https://xilonime.ir/login.html', '_blank', 'noopener,noreferrer'); }
@@ -787,7 +799,11 @@ function updateStats() {
   animateCount('statCompleted', completed);
   animateCount('statWatching', watching);
   animateCount('statEpisodes', episodes);
-  document.getElementById('totalEpisodesBadge').textContent = total > 0 ? t('watchedEpisodesBadge', { count: episodes }) : '';
+  const badge = document.getElementById('totalEpisodesBadge');
+  if (badge) badge.textContent = total > 0 ? t('watchedEpisodesBadge', { count: episodes }) : '';
+  ['all', 'watching', 'completed', 'planned', 'paused', 'dropped'].forEach(status => {
+    setText('count-' + status, status === 'all' ? total : animes.filter(a => a.status === status).length);
+  });
 }
 
 function animateCount(id, target) {
@@ -802,7 +818,35 @@ function scheduleRender() {
 }
 
 // ─── Render ───────────────────────────────────────────────────────
+function renderContinue() {
+  const section = document.getElementById('continueSection');
+  const row = document.getElementById('continueRow');
+  if (!section || !row) return;
+  const watching = animes
+    .filter(a => a.status === 'watching')
+    .sort((a, b) => (b.updatedAt || b.addedAt || 0) - (a.updatedAt || a.addedAt || 0))
+    .slice(0, 8);
+  section.hidden = watching.length === 0;
+  row.innerHTML = watching.map(a => {
+    const pct = getPct(a.epWatched, a.epTotal);
+    const cover = sanitizeUrl(a.cover);
+    const next = (parseInt(a.epWatched) || 0) + 1;
+    return `
+    <article class="continue-card">
+      ${cover ? `<img class="continue-cover" src="${escHtml(cover)}" alt="" loading="lazy" decoding="async" onerror="this.remove()">` : ''}
+      <div class="continue-shade"></div>
+      <div class="continue-body">
+        <div class="continue-title">${escHtml(a.title || a.titleEn || t('noName'))}</div>
+        <div class="continue-meta">${t('episode')} ${next}${a.epTotal ? ' / ' + escHtml(a.epTotal) : ''}</div>
+        <div class="progress-bar-wrap"><div class="progress-bar" style="width:${pct}%"></div></div>
+      </div>
+      <button class="continue-next" onclick="quickEpAdd('${a.id}')" title="${t('plusOneTip')}" aria-label="${t('plusOneTip')}">+1</button>
+    </article>`;
+  }).join('');
+}
+
 function renderList() {
+  renderContinue();
   const q = document.getElementById('searchInput').value.trim().toLowerCase();
   const sort = document.getElementById('sortSelect').value;
 
@@ -825,6 +869,7 @@ function renderList() {
   });
 
   const c = document.getElementById('animeContainer');
+  setText('libraryCount', filtered.length ? String(filtered.length) : '');
   if (filtered.length === 0) {
     c.innerHTML = `
       <div class="empty-state">
@@ -845,73 +890,69 @@ function renderList() {
 function cardHTML(a, idx) {
   const s = getStatusInfo(a.status);
   const pct = getPct(a.epWatched, a.epTotal);
-  const sPct = getPct(a.seasonWatched, a.seasonTotal);
-  const genres = a.genres ? a.genres.split('،').concat(a.genres.split(',')).filter((v,i,arr)=>arr.indexOf(v)===i).slice(0,3) : [];
-  const delay = 0;
+  const genres = a.genres ? a.genres.split(/[,،]/).map(g => g.trim()).filter((v,i,arr)=>v && arr.indexOf(v)===i).slice(0,2) : [];
   const safeCover = sanitizeUrl(a.cover);
   const coverHTML = safeCover
     ? `<img class="card-cover" src="${escHtml(safeCover)}" alt="" loading="lazy" decoding="async" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">`
     : '';
-  const placeholderHTML = `<div class="card-cover-placeholder" style="${safeCover ? 'display:none' : ''}">🎌</div>`;
+  const placeholderHTML = `<div class="card-cover-placeholder" style="${safeCover ? 'display:none' : ''}">${escHtml((a.title || a.titleEn || '?').trim().charAt(0))}</div>`;
+  const episodes = a.epTotal ? `${a.epWatched || 0} / ${a.epTotal}` : (a.epWatched ? String(a.epWatched) : '');
 
   return `
-  <div class="anime-card" id="card-${a.id}" style="animation-delay:${delay}s">
-    ${coverHTML}${placeholderHTML}
-    <div class="card-body">
-      <span class="card-status-badge ${s.cls}">${s.icon} ${s.label}</span>
-      <div class="card-title">${escHtml(a.title || a.titleEn || t('noName'))}</div>
-      ${a.titleEn && a.title ? `<div class="card-title-en">${escHtml(a.titleEn)}</div>` : ''}
-      <div class="card-meta">
-        ${a.epTotal ? `<span class="card-meta-item">📺 ${a.epWatched||0}/${a.epTotal} ${t('episode')}</span>` : (a.epWatched ? `<span class="card-meta-item">📺 ${a.epWatched} ${t('episode')}</span>` : '')}
-        ${a.seasonTotal ? `<span class="card-meta-item">🗂 ${a.seasonWatched||0}/${a.seasonTotal} ${t('season')}</span>` : (a.seasonWatched ? `<span class="card-meta-item">🗂 ${a.seasonWatched} ${t('season')}</span>` : '')}
-      </div>
-      ${(a.epWatched !== undefined && (a.epTotal || a.epWatched > 0)) ? `
-      <div class="progress-section">
-        <div class="progress-label"><span>${t('progressEpisode')}</span><span>${pct}%</span></div>
-        <div class="progress-bar-wrap"><div class="progress-bar" style="width:${pct}%"></div></div>
-      </div>` : ''}
-      ${a.rating ? `<div class="rating">${starsHTML(a.rating)}<span style="font-size:0.75rem;color:var(--text3);margin-right:6px;margin-top:1px">${a.rating}/10</span></div>` : ''}
-      ${genres.length ? `<div class="card-tags">${genres.map(g=>`<span class="tag">${escHtml(g.trim())}</span>`).join('')}</div>` : ''}
+  <article class="anime-card" id="card-${a.id}">
+    <div class="card-poster">
+      ${coverHTML}${placeholderHTML}
+      <span class="card-status-badge ${s.cls}">${s.label}</span>
+      ${a.rating ? `<span class="card-rating">★ ${escHtml(a.rating)}</span>` : ''}
       <div class="card-actions">
-        <button class="btn btn-ghost btn-sm" style="flex:1" onclick="openEdit('${a.id}')">✏️ ${t('edit')}</button>
-        <button class="btn btn-ghost btn-sm btn-icon" onclick="quickEpAdd('${a.id}')" data-tip="${t('plusOneTip')}">+۱</button>
-        <button class="btn btn-danger btn-sm btn-icon" onclick="openDelete('${a.id}')" data-tip="${t('delete')}">🗑</button>
+        <button class="card-action" onclick="openEdit('${a.id}')" title="${t('edit')}" aria-label="${t('edit')}"><span class="i-edit"></span></button>
+        <button class="card-action" onclick="quickEpAdd('${a.id}')" title="${t('plusOneTip')}" aria-label="${t('plusOneTip')}">+1</button>
+        <button class="card-action danger" onclick="openDelete('${a.id}')" title="${t('delete')}" aria-label="${t('delete')}"><span class="i-trash"></span></button>
+      </div>
+      ${(a.epTotal || a.epWatched > 0) ? `<div class="card-progress"><div class="progress-bar" style="width:${pct}%"></div></div>` : ''}
+    </div>
+    <div class="card-body">
+      <div class="card-title">${escHtml(a.title || a.titleEn || t('noName'))}</div>
+      ${a.titleEn && a.title && a.titleEn !== a.title ? `<div class="card-title-en">${escHtml(a.titleEn)}</div>` : ''}
+      <div class="card-meta">
+        ${episodes ? `<span class="card-meta-item">${t('episode')} ${escHtml(episodes)}</span>` : ''}
+        ${a.seasonTotal ? `<span class="card-meta-item">${t('season')} ${a.seasonWatched||0} / ${escHtml(a.seasonTotal)}</span>` : ''}
+        ${genres.map(g => `<span class="card-meta-item muted">${escHtml(g)}</span>`).join('')}
       </div>
     </div>
-  </div>`;
+  </article>`;
 }
 
 function listItemHTML(a, idx) {
   const s = getStatusInfo(a.status);
   const pct = getPct(a.epWatched, a.epTotal);
-  const delay = 0;
   const safeCover = sanitizeUrl(a.cover);
   const coverHTML = safeCover
     ? `<img class="list-cover" src="${escHtml(safeCover)}" alt="" loading="lazy" decoding="async" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">`
     : '';
-  const placeholderHTML = `<div class="list-cover-placeholder" style="${safeCover ? 'display:none' : ''}">🎌</div>`;
+  const placeholderHTML = `<div class="list-cover-placeholder" style="${safeCover ? 'display:none' : ''}">${escHtml((a.title || a.titleEn || '?').trim().charAt(0))}</div>`;
   return `
-  <div class="anime-list-item" style="animation-delay:${delay}s">
+  <article class="anime-list-item">
     ${coverHTML}${placeholderHTML}
     <div class="list-info">
       <div class="list-title">${escHtml(a.title || a.titleEn || t('noName'))}</div>
       <div class="list-meta">
-        <span>${s.icon} ${s.label}</span>
-        ${a.epTotal ? `<span>📺 ${a.epWatched||0}/${a.epTotal}</span>` : ''}
-        ${a.seasonTotal ? `<span>🗂 فصل ${a.seasonWatched||0}/${a.seasonTotal}</span>` : ''}
-        ${a.rating ? `<span>⭐ ${a.rating}/10</span>` : ''}
+        <span class="card-status-badge ${s.cls}">${s.label}</span>
+        ${a.epTotal ? `<span>${t('episode')} ${a.epWatched||0} / ${escHtml(a.epTotal)}</span>` : ''}
+        ${a.seasonTotal ? `<span>${t('season')} ${a.seasonWatched||0} / ${escHtml(a.seasonTotal)}</span>` : ''}
+        ${a.rating ? `<span>★ ${escHtml(a.rating)}</span>` : ''}
       </div>
     </div>
     <div class="list-progress">
-      <div style="font-size:0.72rem;color:var(--text3);margin-bottom:4px;text-align:center">${pct}%</div>
+      <span>${pct}%</span>
       <div class="progress-bar-wrap"><div class="progress-bar" style="width:${pct}%"></div></div>
     </div>
     <div class="list-actions">
-      <button class="btn btn-ghost btn-sm" onclick="openEdit('${a.id}')">✏️</button>
-      <button class="btn btn-ghost btn-sm" onclick="quickEpAdd('${a.id}')">+۱</button>
-      <button class="btn btn-danger btn-sm" onclick="openDelete('${a.id}')">🗑</button>
+      <button class="card-action" onclick="openEdit('${a.id}')" title="${t('edit')}" aria-label="${t('edit')}"><span class="i-edit"></span></button>
+      <button class="card-action" onclick="quickEpAdd('${a.id}')" title="${t('plusOneTip')}" aria-label="${t('plusOneTip')}">+1</button>
+      <button class="card-action danger" onclick="openDelete('${a.id}')" title="${t('delete')}" aria-label="${t('delete')}"><span class="i-trash"></span></button>
     </div>
-  </div>`;
+  </article>`;
 }
 
 function escHtml(s) {
@@ -1001,6 +1042,7 @@ function quickEpAdd(id) {
   const a = animes.find(x => x.id === id);
   if (!a) return;
   a.epWatched = (parseInt(a.epWatched) || 0) + 1;
+  a.updatedAt = Date.now();
   if (a.epTotal && a.epWatched >= parseInt(a.epTotal)) {
     a.status = 'completed';
     showNotif(t('notifCompleted'), '🎉');
@@ -1241,7 +1283,7 @@ function playOnlineUrl() {
 
 async function updateDiscordActivity(anime, episode, total) {
   try {
-    const result = await window.xiloAPI?.discordSetActivity?.({ details: 'در حال تماشا: ' + (anime.title || anime.titleEn || 'Anime'), state: 'قسمت ' + episode.number + ' از ' + total });
+    const result = await window.xiloAPI?.discordSetActivity?.({ details: 'Watching ' + (anime.titleEn || anime.title || 'anime'), state: 'Episode ' + episode.number + ' of ' + total });
     if (!result?.ok) showTinyDiscordError(result?.error || 'Discord وصل نشد');
   } catch { showTinyDiscordError('Discord وصل نشد'); }
 }

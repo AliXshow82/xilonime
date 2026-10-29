@@ -30,3 +30,8 @@ server/
 deploy-server.sh
 nginx-xilonime.conf
 DEPLOY-XILONIME.md
+
+# Tauri build output
+web-dist/
+src-tauri/target/
+src-tauri/gen/

@@ -7,6 +7,7 @@ window.XILONIME_UI = window.XILONIME_UI || {};
     ui.header,
     '<main class="main">',
     ui.stats,
+    ui.continueRow,
     ui.newsTeaser,
     ui.controls,
     ui.animeList,

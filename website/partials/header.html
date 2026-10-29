@@ -1,51 +1,52 @@
-<nav class="nav">
-      <a class="brand" href="index.html#top" aria-label="ژایلونیمه">
-        <img src="media/logo.png" alt="">
-        <span>
-          <strong>ژایلونیمه</strong>
-          <span>Alpha 0.32.5</span>
-        </span>
-      </a>
+<nav class="nav" aria-label="Main">
+  <a class="brand" href="index.html#top">
+    <img src="media/logo.png" alt="" width="36" height="36">
+    <span>
+      <strong data-i18n="brand">Xilonimeh</strong>
+      <small data-version>Alpha</small>
+    </span>
+  </a>
 
-      <button class="menu-toggle" type="button" aria-label="Open menu" aria-expanded="false">
-        <span></span>
+  <div class="nav-links" id="navLinks">
+    <a href="index.html#app" data-i18n="navApp">App</a>
+    <a href="index.html#features" data-i18n="navFeatures">Features</a>
+    <a href="blog.html" data-i18n="navBlog">Blog</a>
+    <a href="my-list.html" data-i18n="navWebApp">Web app</a>
+    <a href="index.html#download" class="nav-cta" data-i18n="navDownload">Download</a>
+  </div>
+
+  <div class="nav-tools">
+    <div class="language-menu">
+      <button class="language-trigger" type="button" aria-haspopup="true" aria-expanded="false">
+        <span class="lang-code">EN</span>
       </button>
-
-      <div class="nav-links">
-        <a href="index.html#features">امکانات</a>
-        <a href="blog.html">بلاگ</a>
-        <a href="index.html#about">درباره</a>
-        <a href="index.html#download" class="keep">دانلود</a>
+      <div class="lang-switch" role="menu">
+        <button class="lang-btn" type="button" data-lang="en" role="menuitem">English</button>
+        <button class="lang-btn" type="button" data-lang="fa" role="menuitem">فارسی</button>
+        <button class="lang-btn" type="button" data-lang="ru" role="menuitem">Русский</button>
+        <button class="lang-btn" type="button" data-lang="zh" role="menuitem">中文</button>
+        <button class="lang-btn" type="button" data-lang="ja" role="menuitem">日本語</button>
       </div>
+    </div>
 
-      <div class="nav-tools">
-        <div class="account-menu" id="accountMenu">
-          <button class="account-trigger" type="button" aria-label="Account">
-            <span class="account-glyph"></span>
-          </button>
-          <div class="account-dropdown">
-            <div class="account-user">
-              <b id="accountMenuName">Xilo User</b>
-              <span id="accountMenuState">وارد نشده</span>
-            </div>
-            <a class="account-guest" href="login.html">ورود</a>
-            <a class="account-guest" href="signup.html">ساخت حساب</a>
-            <a class="account-authed" href="my-list.html">لیست انیمه‌های من</a>
-            <button class="account-authed" type="button" id="siteLogoutBtn">خروج</button>
-          </div>
+    <div class="account-menu" id="accountMenu">
+      <button class="account-trigger" type="button" aria-label="Account" aria-expanded="false">
+        <span class="account-glyph"></span>
+      </button>
+      <div class="account-dropdown">
+        <div class="account-user">
+          <b id="accountMenuName">Xilo Guest</b>
+          <span id="accountMenuState">Not signed in</span>
         </div>
-
-        <div class="language-menu">
-          <button class="language-trigger" type="button" aria-label="Language">
-            <span id="languageTriggerText">زبان</span>
-          </button>
-          <div class="lang-switch" aria-label="Language selector">
-            <button class="lang-btn active" type="button" data-lang="fa">FA</button>
-            <button class="lang-btn" type="button" data-lang="en">EN</button>
-            <button class="lang-btn" type="button" data-lang="ru">RU</button>
-            <button class="lang-btn" type="button" data-lang="zh">中文</button>
-            <button class="lang-btn" type="button" data-lang="ja">日本</button>
-          </div>
-        </div>
+        <a class="account-guest" href="login.html" data-i18n="accountLogin">Login</a>
+        <a class="account-guest" href="signup.html" data-i18n="accountSignup">Create account</a>
+        <a class="account-authed" href="my-list.html" data-i18n="accountMyList">My anime list</a>
+        <button class="account-authed" type="button" id="siteLogoutBtn" data-i18n="accountLogout">Logout</button>
       </div>
-    </nav>
+    </div>
+
+    <button class="menu-toggle" type="button" aria-label="Menu" aria-expanded="false" aria-controls="navLinks">
+      <span></span><span></span>
+    </button>
+  </div>
+</nav>

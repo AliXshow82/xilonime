@@ -3,7 +3,8 @@ window.XILONIME_CATALOG = (() => {
   const TTL = 7 * 24 * 60 * 60 * 1000;
   const MAX_CACHE_KEYS = 80;
   const ENDPOINT = 'https://graphql.anilist.co';
-  const DEFAULT_API_BASE = location.protocol.startsWith('http') ? `${location.origin}/api` : 'https://xilonime.ir/api';
+  const IS_SITE = location.protocol.startsWith('http') && location.hostname !== 'tauri.localhost';
+  const DEFAULT_API_BASE = IS_SITE ? `${location.origin}/api` : 'https://xilonime.ir/api';
 
   const query = `
     query ($search: String, $page: Int, $perPage: Int) {

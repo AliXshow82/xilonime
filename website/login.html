@@ -1,43 +1,45 @@
 <!DOCTYPE html>
-<html lang="fa" dir="rtl">
+<html lang="en" dir="ltr">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ورود | ژایلونیمه</title>
-  <link rel="stylesheet" href="assets/css/style.css?v=0.32.5-sync2">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Login | Xilonimeh</title>
+  <meta name="description" content="Sign in to Xilonimeh to sync your anime list.">
+  <meta name="theme-color" content="#07070a">
+  <link rel="icon" href="assets/icon.ico">
+  <link rel="stylesheet" href="assets/css/style.css?v=0.36.0">
 </head>
-<body class="auth-page">
-  <div class="grid"></div>
-  <div class="noise"></div>
-  <main class="auth-wrap">
-    <a class="auth-brand" href="index.html">
-      <img src="media/logo.png" alt="">
-      <span><b>ژایلونیمه</b><small>Alpha 0.32.5</small></span>
-    </a>
+<body class="auth-page" data-page="login">
+  <canvas id="scene" aria-hidden="true"></canvas>
+  <div class="vignette" aria-hidden="true"></div>
+  <div class="noise" aria-hidden="true"></div>
+
+  <div id="site-header"></div>
+
+  <main>
     <form class="auth-card" id="loginForm">
-      <span class="eyebrow small">Account</span>
-      <h1>ورود به حساب</h1>
-      <p>بعد از ورود، نسخه دسکتاپ و تحت وب از یک دیتابیس مشترک استفاده می‌کنند.</p>
-      <div class="social-login-box">
-        <div class="social-title">Login with</div>
-        <div class="social-grid">
-          <button class="social-auth-btn google-login-btn" id="siteGoogleBtn" type="button">
-            <span class="google-g">G</span><span>Google</span>
-          </button>
-          <button class="social-auth-btn discord-login-btn" id="siteDiscordBtn" type="button">
-            <span>Discord</span>
-          </button>
-        </div>
-        <div class="auth-separator"><span></span><b>Or</b><span></span></div>
+      <p class="eyebrow" data-i18n="authEyebrow">Account</p>
+      <h1 data-i18n="loginTitle">Welcome back</h1>
+      <p data-i18n="loginText">Sign in to keep your list in sync between the desktop app and the web.</p>
+      <div class="social-grid">
+        <button class="social-auth-btn google-login-btn" id="siteGoogleBtn" type="button">
+          <span class="google-g">G</span><span>Google</span>
+        </button>
+        <button class="social-auth-btn discord-login-btn" id="siteDiscordBtn" type="button">
+          <span>Discord</span>
+        </button>
       </div>
-      <label>Username</label>
+      <div class="auth-separator"><span></span><b data-i18n="authOr">or</b><span></span></div>
+      <label for="loginEmail" data-i18n="authUsername">Username or email</label>
       <input type="text" id="loginEmail" placeholder="xilo_user" autocomplete="username" required>
-      <label>رمز عبور</label>
+      <label for="loginPassword" data-i18n="authPassword">Password</label>
       <input type="password" id="loginPassword" placeholder="••••••••" autocomplete="current-password" required>
-      <button class="btn btn-primary" type="submit">ورود</button>
-      <a class="auth-link" href="signup.html">حساب نداری؟ ساخت حساب</a>
+      <button class="btn btn-primary" type="submit"><span data-i18n="loginButton">Sign in</span></button>
+      <a class="auth-link" href="signup.html" data-i18n="loginSwitch">No account yet? Create one</a>
     </form>
   </main>
-  <script type="module" src="assets/js/auth.js?v=0.32.5-sync2"></script>
+
+  <script type="module" src="assets/js/site.js?v=0.36.0"></script>
+  <script type="module" src="assets/js/backdrop.js?v=0.36.0"></script>
 </body>
 </html>
