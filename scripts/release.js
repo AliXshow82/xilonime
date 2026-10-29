@@ -32,8 +32,10 @@ if (!env.TAURI_SIGNING_PRIVATE_KEY) {
 }
 env.TAURI_SIGNING_PRIVATE_KEY_PASSWORD = env.TAURI_SIGNING_PRIVATE_KEY_PASSWORD || '';
 
-const run = (cmd, args) => execFileSync(cmd, args, { cwd: root, env, stdio: 'inherit', shell: process.platform === 'win32' });
-run('npx', ['tauri', 'build']);
+// npx is a .cmd on Windows and needs a shell; gh is a real .exe and must not get one,
+// or arguments with spaces and line breaks (the release notes) get split apart.
+const run = (cmd, args, { shell = false } = {}) => execFileSync(cmd, args, { cwd: root, env, stdio: 'inherit', shell });
+run('npx', ['tauri', 'build'], { shell: process.platform === 'win32' });
 
 const bundleDir = path.join(root, 'src-tauri/target/release/bundle/nsis');
 const installer = `Xilonimeh_${version}_x64-setup.exe`;
@@ -61,7 +63,9 @@ console.log(`\nInstaller: ${installerPath}\nUpdate manifest: ${latestPath}`);
 
 if (publish) {
   // A normal (not pre-) release, because releases/latest/download skips prereleases.
+  const notesPath = path.join(bundleDir, 'release-notes.md');
+  fs.writeFileSync(notesPath, notes);
   run('gh', ['release', 'create', tag, installerPath, `${installerPath}.sig`, latestPath,
-    '--repo', REPO, '--title', `Xilonimeh ${version}`, '--notes', notes, '--latest']);
+    '--repo', REPO, '--title', `Xilonimeh ${version}`, '--notes-file', notesPath, '--latest']);
   console.log(`Published ${tag}`);
 }
