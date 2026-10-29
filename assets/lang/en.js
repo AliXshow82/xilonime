@@ -3,7 +3,7 @@ window.XILONIME_LANGS["en"] = {
   "dir": "ltr",
   "htmlLang": "en",
   "appName": "Xilonimeh",
-  "subtitle": "Alpha 0.30 · My personal anime list",
+  "subtitle": "Alpha 0.32.5 · My personal anime list",
   "addAnime": "Add anime",
   "export": "Export",
   "import": "Import",
@@ -38,7 +38,7 @@ window.XILONIME_LANGS["en"] = {
   "welcomeKicker": "Built for the anime community",
   "welcomeHeadline": "A personal notebook for your anime world",
   "welcomeCopy": "This app was made to help anime fans keep their watch experience organized. It is still early, but it will become better, prettier, and more useful step by step.",
-  "welcomeVersion": "Current version is <span class=\"version-pill\">Alpha 0.30</span>. A fresh install starts empty; use “Add anime” to add your first item.",
+  "welcomeVersion": "Current version is <span class=\"version-pill\">Alpha 0.32.5</span>. A fresh install starts empty; use “Add anime” to add your first item.",
   "later": "Later",
   "startAdd": "Start and add anime",
   "addTitle": "Add <span>new anime</span>",
@@ -107,7 +107,7 @@ window.XILONIME_LANGS["en"] = {
     "playerTitle": "Online player",
     "playerSub": "Play a direct video link like VLC",
     "accountTitle": "Account",
-    "accountSub": "Login and sign up coming soon",
+    "accountSub": "Desktop and web data sync through one central Xilonimeh API and database.",
     "discordTitle": "Discord Activity",
     "discordSub": "Show watch status on Discord",
     "compact": "Compact",
@@ -117,7 +117,9 @@ window.XILONIME_LANGS["en"] = {
     "accountButton": "Account",
     "discordTest": "Test connection",
     "done": "Done",
-    "accountAccess": "Login / Sign up"
+    "accountAccess": "Login / Sign up",
+    "accountSettingsTitle": "Account settings",
+    "accountSettingsSub": "Change your name, email, phone and password under My anime lists."
   },
   "player": {
     "title": "VLC playback",
@@ -146,27 +148,64 @@ window.XILONIME_LANGS["en"] = {
   },
   "account": {
     "title": "Xilonimeh account",
-    "headline": "Login and sign up",
-    "sub": "This section is coming soon.",
+    "headline": "Login required",
+    "sub": "Login or sign up before using Xilonimeh.",
+    "gateNote": "Your list, settings and player unlock after login.",
     "login": "Login",
-    "signup": "Sign up"
+    "signup": "Sign up",
+    "googleFailed": "Google login failed",
+    "googleNotConfigured": "Google login is not configured",
+    "username": "Username",
+    "or": "Or",
+    "loginWith": "Login with",
+    "email": "Email",
+    "password": "Password",
+    "currentPassword": "Current password",
+    "phone": "Phone number",
+    "newPassword": "New password",
+    "saveSettings": "Save account",
+    "displayName": "Display name",
+    "loginSubmit": "Login",
+    "guestSubmit": "Continue as guest",
+    "signupSubmit": "Create account",
+    "verifyNote": "Enter the code sent to your email.",
+    "verifyDevNote": "Development code: {code}",
+    "verifyCode": "Verification code",
+    "verifySubmit": "Verify and create account",
+    "verifyBack": "Back",
+    "verifySent": "Verification code sent",
+    "verifyInvalid": "Verification code is not valid",
+    "loggedIn": "Signed in",
+    "guest": "Guest",
+    "localOnly": "Local mode",
+    "logout": "Logout",
+    "loginRequired": "Login or sign up first",
+    "loginSuccess": "Welcome back",
+    "loggedOut": "Signed out",
+    "invalid": "Enter a valid email and password",
+    "syncFailed": "Could not sync your account data",
+    "settingsSaved": "Account updated",
+    "passwordShort": "Password must be at least 6 characters",
+    "currentPasswordRequired": "Enter your current password first",
+    "guestSuccess": "Guest mode enabled",
+    "accountOnly": "This setting is only for cloud accounts"
   },
   "soon": {
-    "kicker": "Coming soon",
+    "kicker": "Blog",
     "title": "Blog and new anime picks",
-    "sub": "News, recommendations, and anime spotlights will arrive in future versions.",
-    "badge": "Coming soon"
+    "sub": "Open the website blog for news, recommendations, and anime spotlights.",
+    "badge": "Open blog"
   },
   "announcement": {
     "title": "Announcements <span>& Changelog</span>",
     "cardTitle": "Test announcement",
     "cardText": "This section is ready for future server-side messages. For now it shows local test announcements.",
-    "changeTitle": "Change Log - Alpha 0.30",
+    "changeTitle": "Change Log - Alpha 0.32.5",
     "changeText": "See what changed from Alpha 0.20 through the current build.",
     "changeButton": "Open changelog"
   },
   "changelog": {
-    "title": "Changelog <span>Alpha 0.20 - 0.30</span>",
+    "title": "Changelog <span>Alpha 0.20 - 0.32.5</span>",
     "done": "Got it",
     "versions": [
       {
@@ -198,9 +237,33 @@ window.XILONIME_LANGS["en"] = {
           "Added a blog/new anime area marked as coming soon.",
           "Improved app security.",
           "Made the background and animations lighter for weaker systems."
-        
+        ]
+      },
+      {
+        "version": "Alpha 0.32.5",
+        "items": [
+          "Changed the blog area from coming soon to a website blog link.",
+          "Prepared account flow for shared desktop and web data.",
+          "Changed anime search to use the Xilonimeh API first, with AniList as fallback.",
+          "Added the server/API plan for one shared database updated every 2 days."
         ]
       }
     ]
+  },
+  "catalog": {
+    "title": "Anime database",
+    "sub": "Search AniList and fill title, cover, year, status and episode count. Images are not downloaded.",
+    "searchLabel": "Anime database search",
+    "searchPlaceholder": "Type at least 3 letters, e.g. Naruto",
+    "refresh": "Refresh",
+    "minChars": "Type at least 3 characters.",
+    "loading": "Searching AniList...",
+    "cached": "Loaded from weekly local cache.",
+    "updated": "Updated from AniList.",
+    "noResults": "No anime found.",
+    "error": "Could not connect to anime database.",
+    "selected": "Anime info filled from database.",
+    "unknown": "Unknown",
+    "updatedApi": "Updated from Xilonimeh database."
   }
 };

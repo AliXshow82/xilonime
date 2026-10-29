@@ -3,7 +3,7 @@ window.XILONIME_LANGS["zh"] = {
   "dir": "ltr",
   "htmlLang": "zh-CN",
   "appName": "Xilonimeh",
-  "subtitle": "Alpha 0.30 · 我的个人动漫列表",
+  "subtitle": "Alpha 0.32.5 · 我的个人动漫列表",
   "addAnime": "添加动漫",
   "export": "导出",
   "import": "导入",
@@ -38,7 +38,7 @@ window.XILONIME_LANGS["zh"] = {
   "welcomeKicker": "为动漫社区而做",
   "welcomeHeadline": "属于你的动漫世界笔记本",
   "welcomeCopy": "这个应用用于帮助动漫爱好者整理观看体验。它仍处于早期阶段，但会一步步变得更好、更漂亮、更实用。",
-  "welcomeVersion": "当前版本是 <span class=\"version-pill\">Alpha 0.30</span>。首次安装会从空列表开始；点击“添加动漫”添加第一个项目。",
+  "welcomeVersion": "当前版本是 <span class=\"version-pill\">Alpha 0.32.5</span>。首次安装会从空列表开始；点击“添加动漫”添加第一个项目。",
   "later": "稍后",
   "startAdd": "开始并添加",
   "addTitle": "添加<span>新动漫</span>",
@@ -107,7 +107,7 @@ window.XILONIME_LANGS["zh"] = {
     "playerTitle": "在线播放",
     "playerSub": "像 VLC 一样播放直接视频链接",
     "accountTitle": "账户",
-    "accountSub": "登录和注册即将推出",
+    "accountSub": "桌面端和网页版数据将通过同一个 Xilonimeh API 与中央数据库同步。",
     "discordTitle": "Discord Activity",
     "discordSub": "在 Discord 显示观看状态",
     "compact": "紧凑",
@@ -117,7 +117,9 @@ window.XILONIME_LANGS["zh"] = {
     "accountButton": "账户",
     "discordTest": "测试连接",
     "done": "完成",
-    "accountAccess": "登录 / 注册"
+    "accountAccess": "登录 / 注册",
+    "accountSettingsTitle": "账户设置",
+    "accountSettingsSub": "在我的动漫列表下修改姓名、邮箱、手机号和密码。"
   },
   "player": {
     "title": "VLC 播放",
@@ -146,27 +148,64 @@ window.XILONIME_LANGS["zh"] = {
   },
   "account": {
     "title": "Xilonimeh 账户",
-    "headline": "登录与注册",
-    "sub": "此功能即将推出。",
+    "headline": "需要登录",
+    "sub": "使用 Xilonimeh 前请先登录或注册。",
+    "gateNote": "登录后会解锁列表、设置和播放器。",
     "login": "登录",
-    "signup": "注册"
+    "signup": "注册",
+    "googleFailed": "Google 登录失败",
+    "googleNotConfigured": "Google 登录未配置",
+    "username": "用户名",
+    "or": "或",
+    "loginWith": "使用以下方式登录",
+    "email": "邮箱",
+    "password": "密码",
+    "currentPassword": "当前密码",
+    "phone": "手机号",
+    "newPassword": "新密码",
+    "saveSettings": "保存账户",
+    "displayName": "显示名称",
+    "loginSubmit": "登录",
+    "guestSubmit": "以访客继续",
+    "signupSubmit": "创建账户",
+    "verifyNote": "请输入发送到邮箱的验证码。",
+    "verifyDevNote": "开发验证码：{code}",
+    "verifyCode": "验证码",
+    "verifySubmit": "验证并创建账户",
+    "verifyBack": "返回",
+    "verifySent": "验证码已发送",
+    "verifyInvalid": "验证码无效",
+    "loggedIn": "已登录",
+    "guest": "访客",
+    "localOnly": "本地模式",
+    "logout": "退出登录",
+    "loginRequired": "请先登录或注册",
+    "loginSuccess": "欢迎回来",
+    "loggedOut": "已退出登录",
+    "invalid": "请输入有效邮箱和密码",
+    "syncFailed": "无法同步账户数据",
+    "settingsSaved": "账户已更新",
+    "passwordShort": "密码至少需要 6 个字符",
+    "currentPasswordRequired": "请先输入当前密码",
+    "guestSuccess": "访客模式已启用",
+    "accountOnly": "此设置仅适用于云账户"
   },
   "soon": {
-    "kicker": "即将推出",
-    "title": "博客与新番推荐",
-    "sub": "新闻、推荐和动画介绍将在后续版本开放。",
-    "badge": "即将推出"
+    "kicker": "博客",
+    "title": "博客和新番推荐",
+    "sub": "打开网站博客查看新闻、推荐和动漫介绍。",
+    "badge": "打开博客"
   },
   "announcement": {
     "title": "公告 <span>与更新日志</span>",
     "cardTitle": "测试公告",
     "cardText": "该区域已为未来的服务器公告准备好，目前显示本地测试公告。",
-    "changeTitle": "更新日志 - Alpha 0.30",
+    "changeTitle": "更新日志 - Alpha 0.32.5",
     "changeText": "查看从 Alpha 0.20 到当前版本的变化。",
     "changeButton": "打开更新日志"
   },
   "changelog": {
-    "title": "更新日志 <span>Alpha 0.20 - 0.30</span>",
+    "title": "更新日志 <span>Alpha 0.20 - 0.32.5</span>",
     "done": "知道了",
     "versions": [
       {
@@ -198,9 +237,33 @@ window.XILONIME_LANGS["zh"] = {
           "加入博客/新番推荐区域，标记为即将推出。",
           "提升应用安全性。",
           "减轻背景和动画负担，适配较弱设备。"
-        
+        ]
+      },
+      {
+        "version": "Alpha 0.32.5",
+        "items": [
+          "博客区域不再是 coming soon，已连接到网站博客。",
+          "准备账户流程，用于桌面端和网页版共享数据。",
+          "动漫搜索优先使用 Xilonimeh API，AniList 作为备用。",
+          "加入服务器/API 方案：共享数据库每 2 天更新一次。"
         ]
       }
     ]
+  },
+  "catalog": {
+    "title": "动漫数据库",
+    "sub": "搜索 AniList 并填写标题、封面、年份、状态和集数。图片不会下载。",
+    "searchLabel": "搜索动漫数据库",
+    "searchPlaceholder": "至少输入 3 个字符，例如 Naruto",
+    "refresh": "刷新",
+    "minChars": "请至少输入 3 个字符。",
+    "loading": "正在搜索 AniList...",
+    "cached": "已从每周本地缓存加载。",
+    "updated": "已从 AniList 更新。",
+    "noResults": "没有找到动漫。",
+    "error": "无法连接到动漫数据库。",
+    "selected": "已从数据库填入动漫信息。",
+    "unknown": "未知",
+    "updatedApi": "已从 Xilonimeh 数据库更新。"
   }
 };

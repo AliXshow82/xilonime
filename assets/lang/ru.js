@@ -3,7 +3,7 @@ window.XILONIME_LANGS["ru"] = {
   "dir": "ltr",
   "htmlLang": "ru",
   "appName": "Xilonimeh",
-  "subtitle": "Alpha 0.30 · Мой личный список аниме",
+  "subtitle": "Alpha 0.32.5 · Мой личный список аниме",
   "addAnime": "Добавить аниме",
   "export": "Экспорт",
   "import": "Импорт",
@@ -38,7 +38,7 @@ window.XILONIME_LANGS["ru"] = {
   "welcomeKicker": "Создано для аниме-сообщества",
   "welcomeHeadline": "Личный блокнот для твоего мира аниме",
   "welcomeCopy": "Приложение создано, чтобы помочь фанатам аниме организовать просмотр. Это ранняя версия, но она будет становиться лучше и полезнее.",
-  "welcomeVersion": "Текущая версия: <span class=\"version-pill\">Alpha 0.30</span>. Новая установка начинается с пустого списка; добавь первое аниме.",
+  "welcomeVersion": "Текущая версия: <span class=\"version-pill\">Alpha 0.32.5</span>. Новая установка начинается с пустого списка; добавь первое аниме.",
   "later": "Позже",
   "startAdd": "Начать и добавить",
   "addTitle": "Добавить <span>новое аниме</span>",
@@ -107,7 +107,7 @@ window.XILONIME_LANGS["ru"] = {
     "playerTitle": "Онлайн-плеер",
     "playerSub": "Воспроизведение прямой ссылки как в VLC",
     "accountTitle": "Аккаунт",
-    "accountSub": "Вход и регистрация скоро",
+    "accountSub": "Данные desktop и web синхронизируются через один центральный API и базу Xilonimeh.",
     "discordTitle": "Discord Activity",
     "discordSub": "Показывать статус просмотра в Discord",
     "compact": "Компактно",
@@ -117,7 +117,9 @@ window.XILONIME_LANGS["ru"] = {
     "accountButton": "Аккаунт",
     "discordTest": "Проверить",
     "done": "Готово",
-    "accountAccess": "Вход / Регистрация"
+    "accountAccess": "Вход / Регистрация",
+    "accountSettingsTitle": "Настройки аккаунта",
+    "accountSettingsSub": "Измените имя, email, телефон и пароль в разделе моих списков аниме."
   },
   "player": {
     "title": "Плеер VLC",
@@ -146,27 +148,64 @@ window.XILONIME_LANGS["ru"] = {
   },
   "account": {
     "title": "Аккаунт Xilonimeh",
-    "headline": "Вход и регистрация",
-    "sub": "Этот раздел скоро появится.",
+    "headline": "Требуется вход",
+    "sub": "Войдите или зарегистрируйтесь перед использованием Xilonimeh.",
+    "gateNote": "Список, настройки и плеер откроются после входа.",
     "login": "Войти",
-    "signup": "Регистрация"
+    "signup": "Регистрация",
+    "googleFailed": "Не удалось войти через Google",
+    "googleNotConfigured": "Вход через Google не настроен",
+    "username": "Имя пользователя",
+    "or": "Или",
+    "loginWith": "Войти через",
+    "email": "Email",
+    "password": "Пароль",
+    "currentPassword": "Текущий пароль",
+    "phone": "Телефон",
+    "newPassword": "Новый пароль",
+    "saveSettings": "Сохранить аккаунт",
+    "displayName": "Имя",
+    "loginSubmit": "Войти",
+    "guestSubmit": "Продолжить как гость",
+    "signupSubmit": "Создать аккаунт",
+    "verifyNote": "Введите код, отправленный на email.",
+    "verifyDevNote": "Код разработки: {code}",
+    "verifyCode": "Код подтверждения",
+    "verifySubmit": "Подтвердить и создать аккаунт",
+    "verifyBack": "Назад",
+    "verifySent": "Код подтверждения отправлен",
+    "verifyInvalid": "Код подтверждения недействителен",
+    "loggedIn": "Вы вошли",
+    "guest": "Гость",
+    "localOnly": "Локальный режим",
+    "logout": "Выйти",
+    "loginRequired": "Сначала войдите или зарегистрируйтесь",
+    "loginSuccess": "С возвращением",
+    "loggedOut": "Вы вышли",
+    "invalid": "Введите корректный email и пароль",
+    "syncFailed": "Не удалось синхронизировать данные аккаунта",
+    "settingsSaved": "Аккаунт обновлён",
+    "passwordShort": "Пароль должен быть не короче 6 символов",
+    "currentPasswordRequired": "Сначала введите текущий пароль",
+    "guestSuccess": "Гостевой режим включён",
+    "accountOnly": "Эта настройка доступна только для облачного аккаунта"
   },
   "soon": {
-    "kicker": "Скоро",
-    "title": "Блог и новые аниме",
-    "sub": "Новости, рекомендации и подборки аниме появятся в следующих версиях.",
-    "badge": "Скоро"
+    "kicker": "Блог",
+    "title": "Блог и подборки новых аниме",
+    "sub": "Открой блог сайта для новостей, рекомендаций и подборок.",
+    "badge": "Открыть блог"
   },
   "announcement": {
     "title": "Объявления <span>и изменения</span>",
     "cardTitle": "Тестовое объявление",
     "cardText": "Раздел готов для будущих серверных сообщений. Пока здесь локальное тестовое объявление.",
-    "changeTitle": "Изменения - Alpha 0.30",
+    "changeTitle": "Изменения - Alpha 0.32.5",
     "changeText": "Посмотри изменения с Alpha 0.20 до текущей сборки.",
     "changeButton": "Открыть журнал"
   },
   "changelog": {
-    "title": "Журнал изменений <span>Alpha 0.20 - 0.30</span>",
+    "title": "Журнал изменений <span>Alpha 0.20 - 0.32.5</span>",
     "done": "Понятно",
     "versions": [
       {
@@ -198,9 +237,33 @@ window.XILONIME_LANGS["ru"] = {
           "Добавлен блок блога/новых аниме в статусе coming soon.",
           "Улучшена безопасность приложения.",
           "Фон и анимации стали легче для слабых систем."
-        
+        ]
+      },
+      {
+        "version": "Alpha 0.32.5",
+        "items": [
+          "Раздел блога больше не coming soon и ведет на сайт.",
+          "Подготовлен аккаунт для общих данных desktop и web.",
+          "Поиск аниме сначала использует Xilonimeh API, затем AniList как fallback.",
+          "Добавлен план сервера/API с общей базой и обновлением каждые 2 дня."
         ]
       }
     ]
+  },
+  "catalog": {
+    "title": "База аниме",
+    "sub": "Поиск в AniList и заполнение названия, обложки, года, статуса и эпизодов. Изображения не скачиваются.",
+    "searchLabel": "Поиск по базе аниме",
+    "searchPlaceholder": "Введите минимум 3 символа, например Naruto",
+    "refresh": "Обновить",
+    "minChars": "Введите минимум 3 символа.",
+    "loading": "Поиск в AniList...",
+    "cached": "Загружено из недельного локального кеша.",
+    "updated": "Обновлено из AniList.",
+    "noResults": "Аниме не найдено.",
+    "error": "Не удалось подключиться к базе аниме.",
+    "selected": "Данные аниме заполнены из базы.",
+    "unknown": "Неизвестно",
+    "updatedApi": "Обновлено из базы Xilonimeh."
   }
 };

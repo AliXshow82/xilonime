@@ -1,14 +1,16 @@
 document.getElementById('xilonime-root').innerHTML = window.XILONIME_UI.shell;
 
 // ─── State ──────────────────────────────────────────────────────
-const APP_VERSION = '0.30.0-alpha.0';
-const APP_VERSION_LABEL = 'Alpha 0.30';
+const APP_VERSION = '0.32.5-alpha.0';
+const APP_VERSION_LABEL = 'Alpha 0.32.5';
 const STORAGE_KEY = 'xiloAnimeVault.animes.alpha02';
 const WELCOME_KEY = 'xiloAnimeVault.welcome.alpha02';
 const LANGUAGE_KEY = 'xiloAnimeVault.language.alpha02';
 const SETTINGS_KEY = 'xiloAnimeVault.settings.alpha030';
 const CHANGELOG_KEY = 'xiloAnimeVault.changelog.alpha030';
-let animes = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+const SESSION_KEY = 'xiloAnimeVault.session.alpha0325';
+let currentSession = loadSession();
+let animes = loadInitialAnimeList();
 let currentFilter = 'all';
 let currentView = 'grid';
 let editingId = null;
@@ -18,8 +20,21 @@ let currentLanguage = localStorage.getItem(LANGUAGE_KEY) || 'en';
 let settings = loadSettings();
 let currentPlayerAnimeId = null;
 let currentEpisodeIndex = 0;
+let catalogSearchTimer = 0;
+let catalogSearchSeq = 0;
+let catalogLastResults = [];
+let selectedCatalogAnime = null;
+let authReadyShown = false;
+let pendingSignup = null;
+let syncTimer = 0;
+let syncPollTimer = 0;
+let syncInFlight = false;
+let lastLocalSyncAt = 0;
+let lastLibrarySignature = '';
+let syncUnauthorizedShown = false;
 
 const I18N = window.XILONIME_LANGS || {};
+const IS_WEB_APP = location.protocol.startsWith('http') && location.pathname.endsWith('/my-list.html');
 
 function t(key, vars = {}) {
   const parts = key.split('.');
@@ -73,7 +88,7 @@ function applyLanguage() {
   const settingsBtn = document.getElementById('settingsBtn'); if (settingsBtn) { settingsBtn.title = t('settings.titlePlain'); settingsBtn.setAttribute('aria-label', t('settings.titlePlain')); }
   const headerAccountBtn = document.getElementById('headerAccountBtn'); if (headerAccountBtn) { headerAccountBtn.title = t('settings.accountAccess'); headerAccountBtn.setAttribute('aria-label', t('settings.accountAccess')); }
   const headerPlayerBtn = document.getElementById('headerPlayerBtn'); if (headerPlayerBtn) { headerPlayerBtn.title = t('settings.playerTitle'); headerPlayerBtn.setAttribute('aria-label', t('settings.playerTitle')); }
-  setText('headerAccountText', t('settings.accountAccess'));
+  updateAccountUi();
   setText('headerPlayerText', t('settings.playerTitle'));
   setText('soonKicker', t('soon.kicker'));
   setText('soonTitle', t('soon.title'));
@@ -102,7 +117,7 @@ function applyLanguage() {
   if (welcomeBtns[0]) welcomeBtns[0].textContent = t('later');
   if (welcomeBtns[1]) welcomeBtns[1].textContent = t('startAdd');
 
-  const formMap = { '#fTitle':['labels.title','ph.title'], '#fTitleEn':['labels.titleEn','ph.titleEn'], '#fGenres':['labels.genres','ph.genres'], '#fEpWatched':['labels.epWatched',null], '#fEpTotal':['labels.epTotal','ph.epTotal'], '#fSeasonWatched':['labels.seasonWatched',null], '#fSeasonTotal':['labels.seasonTotal','ph.seasonTotal'], '#fCover':['labels.cover','ph.cover'], '#fNotes':['labels.notes','ph.notes'] };
+  const formMap = { '#animeCatalogSearch':['catalog.searchLabel','catalog.searchPlaceholder'], '#fTitle':['labels.title','ph.title'], '#fTitleEn':['labels.titleEn','ph.titleEn'], '#fGenres':['labels.genres','ph.genres'], '#fEpWatched':['labels.epWatched',null], '#fEpTotal':['labels.epTotal','ph.epTotal'], '#fSeasonWatched':['labels.seasonWatched',null], '#fSeasonTotal':['labels.seasonTotal','ph.seasonTotal'], '#fCover':['labels.cover','ph.cover'], '#fNotes':['labels.notes','ph.notes'] };
   Object.entries(formMap).forEach(([selector, keys]) => {
     const field = document.querySelector(selector);
     const label = field?.closest('.form-group')?.querySelector('label');
@@ -117,6 +132,10 @@ function applyLanguage() {
   });
   const formTitle = document.querySelector('#formModal .modal-title');
   if (formTitle) formTitle.innerHTML = editingId ? t('editTitle') : t('addTitle');
+  setText('catalogSearchTitle', t('catalog.title'));
+  setText('catalogSearchSub', t('catalog.sub'));
+  setText('animeCatalogRefresh', t('catalog.refresh'));
+  setText('animeCatalogStatus', '');
   const footerBtns = document.querySelectorAll('#formModal .modal-footer .btn');
   if (footerBtns[0]) footerBtns[0].textContent = t('cancel');
   const saveText = document.getElementById('saveText'); if (saveText) saveText.textContent = editingId ? t('update') : t('save');
@@ -152,11 +171,32 @@ function applySettingsLanguage() {
   setText('densityLarge', t('settings.large'));
   setText('openPlayerBtn', t('settings.openPlayer'));
   setText('accountBtn', t('settings.accountButton'));
+  setText('accountSettingsTitle', t('settings.accountSettingsTitle'));
+  setText('accountSettingsSub', t('settings.accountSettingsSub'));
+  setText('accountSettingsNameLabel', t('account.displayName'));
+  setText('accountSettingsEmailLabel', t('account.email'));
+  setText('accountSettingsPhoneLabel', t('account.phone'));
+  setText('accountSettingsCurrentPasswordLabel', t('account.currentPassword'));
+  setText('accountSettingsPasswordLabel', t('account.newPassword'));
+  setText('accountSettingsSaveBtn', t('account.saveSettings'));
   setText('accountModalTitle', t('account.title'));
   setText('accountModalHeadline', t('account.headline'));
   setText('accountModalSub', t('account.sub'));
-  setText('accountLoginBtn', t('account.login'));
-  setText('accountSignupBtn', t('account.signup'));
+  setText('accountGateNote', t('account.gateNote'));
+  setText('accountLoginWithTitle', t('account.loginWith'));
+  setText('accountOrText', t('account.or'));
+  setText('accountLoginTab', t('account.login'));
+  setText('accountSignupTab', t('account.signup'));
+  setText('accountEmailLabel', t('account.username'));
+  setText('accountPasswordLabel', t('account.password'));
+  setText('accountNameLabel', t('account.username'));
+  setText('accountSignupEmailLabel', t('account.email'));
+  setText('accountSignupPasswordLabel', t('account.password'));
+  setText('accountLoginSubmit', t('account.loginSubmit'));
+  setText('accountGuestSubmit', t('account.guestSubmit'));
+  setText('accountSignupSubmit', t('account.signupSubmit'));
+  setText('accountProfileTitle', t('account.loggedIn'));
+  setText('accountLogoutBtn', t('account.logout'));
   setText('discordTestBtn', t('settings.discordTest'));
   setText('settingsDoneBtn', t('settings.done'));
   setText('openVlcText', t('player.openVlc'));
@@ -181,10 +221,341 @@ function applySettings() {
 }
 function setUiScale(value) { settings.scale = Math.max(85, Math.min(115, parseInt(value) || 100)); saveSettings(); applySettings(); }
 function setDensity(value) { settings.density = ['compact','normal','large'].includes(value) ? value : 'normal'; saveSettings(); applySettings(); }
-function openSettingsModal() { applySettings(); document.getElementById('settingsModal').style.display = 'flex'; }
-function openAccountModal() { document.getElementById('accountModal').style.display = 'flex'; }
-function openAnnouncementModal() { applyAnnouncementLanguage(); document.getElementById('announcementModal').style.display = 'flex'; }
-function openChangelogModal() { applyAnnouncementLanguage(); document.getElementById('changelogModal').style.display = 'flex'; }
+function loadSession() {
+  try {
+    const hash = new URLSearchParams(location.hash.replace(/^#/, ''));
+    const encoded = hash.get('xilo_auth');
+    if (encoded) {
+      const normalized = encoded.replace(/-/g, '+').replace(/_/g, '/');
+      const payload = JSON.parse(atob(normalized.padEnd(Math.ceil(normalized.length / 4) * 4, '=')));
+      const session = {
+        token: payload.token,
+        mode: 'account',
+        email: sanitizeText(payload.user?.email || '', 160),
+        name: sanitizeText(payload.user?.name || 'Xilonimeh user', 80),
+        phone: sanitizeText(payload.user?.phone || '', 32),
+        googleLinked: !!payload.user?.googleLinked,
+        discordLinked: !!payload.user?.discordLinked,
+        signedAt: Date.now()
+      };
+      localStorage.setItem(SESSION_KEY, JSON.stringify(session));
+      history.replaceState(null, '', location.pathname + location.search);
+      return session;
+    }
+    const session = JSON.parse(localStorage.getItem(SESSION_KEY) || 'null');
+    return session && session.token ? session : null;
+  } catch {
+    return null;
+  }
+}
+function loadInitialAnimeList() {
+  return currentSession?.mode === 'guest' ? JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]') : [];
+}
+function saveSession(session) {
+  currentSession = session && session.token ? session : null;
+  if (currentSession) localStorage.setItem(SESSION_KEY, JSON.stringify(currentSession));
+  else localStorage.removeItem(SESSION_KEY);
+  updateAccountUi();
+  if (isAccountSession()) startAccountSyncLoop();
+  else stopAccountSyncLoop();
+}
+function isAuthenticated() { return !!currentSession?.token; }
+function isGuestSession() { return currentSession?.mode === 'guest'; }
+function isAccountSession() { return isAuthenticated() && currentSession?.mode !== 'guest'; }
+function getApiBase() {
+  const siteApi = location.protocol.startsWith('http') ? `${location.origin}/api` : 'https://xilonime.ir/api';
+  return String(localStorage.getItem('xiloAnimeVault.apiBase') || siteApi).replace(/\/+$/, '');
+}
+function requireAuth() {
+  if (isAuthenticated()) return true;
+  openAccountModal({ gate: true });
+  showNotif(t('account.loginRequired'), '!');
+  return false;
+}
+function updateAccountUi() {
+  const label = document.getElementById('headerAccountText');
+  if (label) label.textContent = isGuestSession() ? t('account.guest') : (isAuthenticated() ? (currentSession.name || currentSession.email || t('account.loggedIn')) : t('settings.accountAccess'));
+  const email = document.getElementById('accountProfileEmail');
+  if (email) email.textContent = isGuestSession() ? t('account.localOnly') : (currentSession?.email || '');
+  populateAccountSettings();
+}
+function setAccountMode(mode) {
+  const signup = mode === 'signup';
+  if (mode !== 'verify') pendingSignup = mode === 'signup' ? pendingSignup : null;
+  document.getElementById('accountLoginTab')?.classList.toggle('active', !signup);
+  document.getElementById('accountSignupTab')?.classList.toggle('active', signup);
+  const loginForm = document.getElementById('accountLoginForm');
+  const signupForm = document.getElementById('accountSignupForm');
+  const verifyForm = document.getElementById('accountVerifyForm');
+  if (loginForm) loginForm.hidden = mode !== 'login' || isAuthenticated();
+  if (signupForm) signupForm.hidden = mode !== 'signup' || isAuthenticated();
+  if (verifyForm) verifyForm.hidden = mode !== 'verify' || isAuthenticated();
+}
+function renderAccountModal(mode = 'login') {
+  const signedIn = isAuthenticated();
+  document.getElementById('accountProfile')?.toggleAttribute('hidden', !signedIn);
+  document.getElementById('accountLoginForm')?.toggleAttribute('hidden', signedIn || mode !== 'login');
+  document.getElementById('accountSignupForm')?.toggleAttribute('hidden', signedIn || mode !== 'signup');
+  document.getElementById('accountVerifyForm')?.toggleAttribute('hidden', signedIn || mode !== 'verify');
+  document.getElementById('accountLoginTab')?.classList.toggle('active', mode !== 'signup');
+  document.getElementById('accountSignupTab')?.classList.toggle('active', mode === 'signup');
+  document.querySelector('.account-tabs')?.toggleAttribute('hidden', signedIn);
+  document.getElementById('accountCloseBtn')?.toggleAttribute('hidden', !signedIn);
+  document.getElementById('accountBtn')?.toggleAttribute('disabled', isGuestSession());
+  updateAccountUi();
+}
+function openSettingsModal() { if (!requireAuth()) return; applySettings(); populateAccountSettings(); document.getElementById('settingsModal').style.display = 'flex'; }
+function openAccountModal(options = {}) {
+  const modal = document.getElementById('accountModal');
+  if (!modal) return;
+  modal.dataset.gate = options.gate || !isAuthenticated() ? 'true' : 'false';
+  renderAccountModal(options.mode || 'login');
+  modal.style.display = 'flex';
+  setTimeout(() => document.getElementById(options.mode === 'signup' ? 'accountName' : 'accountEmail')?.focus(), 50);
+}
+function closeAccountModal() {
+  if (!isAuthenticated()) return;
+  closeModal('accountModal');
+}
+async function finishAuth({ email, name, phone, token, googleLinked, discordLinked }) {
+  const session = {
+    token: token || 'demo-token',
+    mode: 'account',
+    email: sanitizeText(email, 160),
+    name: sanitizeText(name || email?.split('@')[0] || 'Xilonimeh user', 80),
+    phone: sanitizeText(phone || '', 32),
+    googleLinked: !!googleLinked,
+    discordLinked: !!discordLinked,
+    signedAt: Date.now()
+  };
+  saveSession(session);
+  renderAccountModal();
+  closeModal('accountModal');
+  await loadLibraryFromApi().catch(error => showNotif(error.message || t('account.syncFailed'), '!'));
+  afterAuthReady();
+  showNotif(t('account.loginSuccess'), '✓');
+}
+
+function loginAsGuest() {
+  saveSession({
+    token: 'guest-local',
+    mode: 'guest',
+    name: t('account.guest'),
+    email: '',
+    phone: '',
+    signedAt: Date.now()
+  });
+  animes = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+  renderAccountModal();
+  closeModal('accountModal');
+  updateStats();
+  renderList();
+  afterAuthReady();
+  showNotif(t('account.guestSuccess'), '✓');
+}
+
+function populateAccountSettings() {
+  const card = document.querySelector('.account-settings-card');
+  if (card) card.hidden = isGuestSession();
+  const fields = {
+    accountSettingsName: currentSession?.name || '',
+    accountSettingsEmail: currentSession?.email || '',
+    accountSettingsPhone: currentSession?.phone || '',
+    accountSettingsCurrentPassword: '',
+    accountSettingsPassword: ''
+  };
+  Object.entries(fields).forEach(([id, value]) => {
+    const field = document.getElementById(id);
+    if (field && field !== document.activeElement) field.value = value;
+  });
+  updateLinkedAuthButtons();
+}
+
+function updateLinkedAuthButtons() {
+  const googleBtn = document.getElementById('linkGoogleBtn');
+  const discordBtn = document.getElementById('linkDiscordBtn');
+  if (googleBtn) {
+    const linked = !!currentSession?.googleLinked;
+    googleBtn.textContent = linked ? 'Google Linked' : 'Link Google';
+    googleBtn.classList.toggle('is-linked', linked);
+    googleBtn.disabled = linked || !isAccountSession();
+  }
+  if (discordBtn) {
+    const linked = !!currentSession?.discordLinked;
+    discordBtn.textContent = linked ? 'Discord Linked' : 'Link Discord';
+    discordBtn.classList.toggle('is-linked', linked);
+    discordBtn.disabled = linked || !isAccountSession();
+  }
+}
+
+async function saveAccountSettings() {
+  if (!requireAuth()) return;
+  if (!isAccountSession()) { showNotif(t('account.accountOnly'), '!'); return; }
+  const name = sanitizeText(document.getElementById('accountSettingsName')?.value, 80);
+  const email = sanitizeText(document.getElementById('accountSettingsEmail')?.value, 160);
+  const phone = sanitizeText(document.getElementById('accountSettingsPhone')?.value, 32);
+  const currentPassword = document.getElementById('accountSettingsCurrentPassword')?.value || '';
+  const password = document.getElementById('accountSettingsPassword')?.value || '';
+  if (!name || !email || !email.includes('@')) { showNotif(t('account.invalid'), '!'); return; }
+  if (password && password.length < 6) { showNotif(t('account.passwordShort'), '!'); return; }
+  if (password && !currentPassword) { showNotif(t('account.currentPasswordRequired'), '!'); return; }
+  try {
+    const payload = { name, email, phone };
+    if (password) {
+      payload.currentPassword = currentPassword;
+      payload.password = password;
+    }
+    const data = await apiRequest('/me', { method: 'PATCH', body: JSON.stringify(payload) });
+    saveSession({ ...currentSession, ...(data.user || payload) });
+    const currentPass = document.getElementById('accountSettingsCurrentPassword');
+    const pass = document.getElementById('accountSettingsPassword');
+    if (currentPass) currentPass.value = '';
+    if (pass) pass.value = '';
+    showNotif(t('account.settingsSaved'), '✓');
+  } catch (error) {
+    showNotif(error.message || t('account.syncFailed'), '!');
+  }
+}
+async function submitLogin(event) {
+  event.preventDefault();
+  const identifier = sanitizeText(document.getElementById('accountEmail')?.value, 160);
+  const password = document.getElementById('accountPassword')?.value || '';
+  if (!identifier || password.length < 3) { showNotif(t('account.invalid'), '!'); return; }
+  try {
+    const data = await apiRequest('/auth/login', { method: 'POST', body: JSON.stringify({ identifier, password }) });
+    await finishAuth({ email: data.user?.email || identifier, name: data.user?.name, phone: data.user?.phone, token: data.token, googleLinked: data.user?.googleLinked, discordLinked: data.user?.discordLinked });
+  } catch (error) {
+    showNotif(error.message || t('account.invalid'), '!');
+  }
+}
+
+async function loginWithGoogle() {
+  try {
+    const data = await apiRequest('/config', { method: 'GET' });
+    if (!data.googleClientId) { showNotif(t('account.googleNotConfigured'), '!'); return; }
+    await loadGoogleIdentity();
+    google.accounts.id.initialize({
+      client_id: data.googleClientId,
+      callback: async response => {
+        try {
+          const path = isAccountSession() ? '/auth/google/link' : '/auth/google';
+          const result = await apiRequest(path, { method: 'POST', body: JSON.stringify({ credential: response.credential }) });
+          if (isAccountSession()) {
+            saveSession({ ...currentSession, ...(result.user || {}), googleLinked: true });
+            populateAccountSettings();
+            showNotif('Google Linked', '✓');
+          } else {
+            await finishAuth({ email: result.user?.email, name: result.user?.name, phone: result.user?.phone, token: result.token, googleLinked: result.user?.googleLinked, discordLinked: result.user?.discordLinked });
+          }
+        } catch (error) {
+          showNotif(error.message || t('account.googleFailed'), '!');
+        }
+      }
+    });
+    google.accounts.id.prompt(notification => {
+      if (notification.isNotDisplayed?.() || notification.isSkippedMoment?.()) {
+        google.accounts.id.renderButton(document.getElementById('accountGoogleBtn'), { theme: 'outline', size: 'large', width: 260 });
+      }
+    });
+  } catch (error) {
+    showNotif(error.message || t('account.googleFailed'), '!');
+  }
+}
+
+function loadGoogleIdentity() {
+  return new Promise((resolve, reject) => {
+    if (window.google?.accounts?.id) { resolve(); return; }
+    const script = document.createElement('script');
+    script.src = 'https://accounts.google.com/gsi/client';
+    script.async = true;
+    script.defer = true;
+    script.onload = resolve;
+    script.onerror = () => reject(new Error(t('account.googleFailed')));
+    document.head.appendChild(script);
+  });
+}
+
+async function loginWithDiscord() {
+  try {
+    const data = await apiRequest('/config', { method: 'GET' });
+    if (!data.discordConfigured) { showNotif('Discord login is not configured', '!'); return; }
+    const returnTo = location.protocol.startsWith('http') && location.pathname.endsWith('/my-list.html')
+      ? location.pathname
+      : '/login.html';
+    const startPath = '/auth/discord/start?json=1&returnTo=' + encodeURIComponent(returnTo);
+    const start = await apiRequest(startPath, { method: 'GET' });
+    const url = start.url || (getApiBase() + '/auth/discord/start?returnTo=' + encodeURIComponent(returnTo));
+    if (location.protocol.startsWith('http')) location.href = url;
+    else window.open(url, '_blank', 'noopener,noreferrer');
+  } catch (error) {
+    showNotif(error.message || 'Discord login failed', '!');
+  }
+}
+
+function linkGoogleAccount() {
+  if (!requireAuth()) return;
+  if (!isAccountSession()) { showNotif(t('account.accountOnly'), '!'); return; }
+  if (currentSession?.googleLinked) return;
+  loginWithGoogle();
+}
+
+function linkDiscordAccount() {
+  if (!requireAuth()) return;
+  if (!isAccountSession()) { showNotif(t('account.accountOnly'), '!'); return; }
+  if (currentSession?.discordLinked) return;
+  loginWithDiscord();
+}
+async function submitSignup(event) {
+  event.preventDefault();
+  const username = sanitizeText(document.getElementById('accountName')?.value, 40);
+  const email = sanitizeText(document.getElementById('accountSignupEmail')?.value, 160);
+  const password = document.getElementById('accountSignupPassword')?.value || '';
+  if (!username || !email || password.length < 6) { showNotif(t('account.invalid'), '!'); return; }
+  try {
+    const data = await apiRequest('/auth/signup', { method: 'POST', body: JSON.stringify({ username, name: username, email, password }) });
+    await finishAuth({ email: data.user?.email || email, name: data.user?.name || username, phone: data.user?.phone, token: data.token, googleLinked: data.user?.googleLinked, discordLinked: data.user?.discordLinked });
+  } catch (error) {
+    showNotif(error.message || t('account.invalid'), '!');
+  }
+}
+
+async function submitSignupVerification(event) {
+  event.preventDefault();
+  const code = sanitizeText(document.getElementById('accountVerifyCode')?.value, 12);
+  if (!pendingSignup?.pendingId || code.length < 4) { showNotif(t('account.verifyInvalid'), '!'); return; }
+  try {
+    const data = await apiRequest('/auth/signup/verify', { method: 'POST', body: JSON.stringify({ pendingId: pendingSignup.pendingId, code }) });
+    pendingSignup = null;
+    await finishAuth({ email: data.user?.email, name: data.user?.name, phone: data.user?.phone, token: data.token, googleLinked: data.user?.googleLinked, discordLinked: data.user?.discordLinked });
+  } catch (error) {
+    showNotif(error.message || t('account.verifyInvalid'), '!');
+  }
+}
+function logoutAccount() {
+  saveSession(null);
+  animes = [];
+  authReadyShown = false;
+  updateStats();
+  renderList();
+  renderAccountModal();
+  openAccountModal({ gate: true });
+  showNotif(t('account.loggedOut'), '!');
+}
+function afterAuthReady() {
+  if (authReadyShown || !isAuthenticated()) return;
+  authReadyShown = true;
+  if (IS_WEB_APP) return;
+  showWelcomeIfNeeded();
+  if (localStorage.getItem(CHANGELOG_KEY) !== 'seen') setTimeout(openChangelogModal, 900);
+}
+function openBlogUrl() {
+  if (!requireAuth()) return;
+  const url = location.protocol.startsWith('http') ? `${location.origin}/blog.html` : 'https://xilonime.ir/blog.html';
+  window.open(url, '_blank', 'noopener,noreferrer');
+}
+function openAccountUrl() { window.open('https://xilonime.ir/login.html', '_blank', 'noopener,noreferrer'); }
+function openAnnouncementModal() { if (!requireAuth()) return; applyAnnouncementLanguage(); document.getElementById('announcementModal').style.display = 'flex'; }
+function openChangelogModal() { if (!requireAuth()) return; applyAnnouncementLanguage(); document.getElementById('changelogModal').style.display = 'flex'; }
 function dismissChangelog() { localStorage.setItem(CHANGELOG_KEY, 'seen'); closeModal('changelogModal'); }
 
 function applyAnnouncementLanguage() {
@@ -212,8 +583,106 @@ function applyAnnouncementLanguage() {
 }
 
 // ─── Utilities ──────────────────────────────────────────────────
-function save() {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(animes));
+async function save({ immediate = false } = {}) {
+  if (isGuestSession()) localStorage.setItem(STORAGE_KEY, JSON.stringify(animes));
+  if (isAccountSession()) {
+    lastLocalSyncAt = Date.now();
+    return syncLibraryToApi({ immediate });
+  }
+}
+
+function authHeaders() {
+  return isAccountSession() ? { Authorization: 'Bearer ' + currentSession.token } : {};
+}
+
+async function apiRequest(path, options = {}) {
+  const response = await fetch(getApiBase() + path, {
+    ...options,
+    headers: {
+      'Content-Type': 'application/json',
+      ...authHeaders(),
+      ...(options.headers || {})
+    }
+  });
+  const data = await response.json().catch(() => ({}));
+  if (!response.ok) throw new Error(data.error || 'Request failed');
+  return data;
+}
+
+function syncLibraryToApi({ immediate = false } = {}) {
+  if (!isAccountSession()) return Promise.resolve();
+  clearTimeout(syncTimer);
+  const payload = JSON.stringify({ items: animes });
+  const run = async () => {
+    syncInFlight = true;
+    try {
+      const data = await apiRequest('/library/sync', { method: 'POST', body: payload });
+      if (Array.isArray(data.items)) lastLibrarySignature = librarySignature(data.items);
+      syncUnauthorizedShown = false;
+      return data;
+    } finally {
+      syncInFlight = false;
+    }
+  };
+  if (immediate) return run();
+  return new Promise(resolve => {
+    syncTimer = setTimeout(() => {
+      run().catch(() => {}).finally(resolve);
+    }, 150);
+  });
+}
+
+function librarySignature(items = animes) {
+  return JSON.stringify((items || []).map(item => [
+    item.id,
+    item.title || '',
+    item.titleEn || '',
+    item.status || '',
+    Number(item.epWatched) || 0,
+    Number(item.epTotal) || 0,
+    Number(item.seasonWatched) || 0,
+    Number(item.seasonTotal) || 0,
+    Number(item.rating) || 0,
+    item.genres || '',
+    item.cover || '',
+    item.notes || '',
+    item.source?.provider || '',
+    item.source?.id || ''
+  ]).sort((a, b) => String(a[0]).localeCompare(String(b[0]))));
+}
+
+async function loadLibraryFromApi({ silent = false } = {}) {
+  if (!isAccountSession()) return;
+  const data = await apiRequest('/library');
+  if (Array.isArray(data.items)) {
+    const items = normalizeImportedItems(data.items) || [];
+    const signature = librarySignature(items);
+    if (signature === lastLibrarySignature && silent) return;
+    lastLibrarySignature = signature;
+    animes = items;
+    updateStats();
+    renderList();
+    syncUnauthorizedShown = false;
+  }
+}
+
+function startAccountSyncLoop() {
+  stopAccountSyncLoop();
+  if (!isAccountSession()) return;
+  syncPollTimer = setInterval(() => {
+    if (!isAccountSession() || document.hidden || syncInFlight || Date.now() - lastLocalSyncAt < 900) return;
+    loadLibraryFromApi({ silent: true }).catch(error => {
+      if (/Unauthorized/i.test(error.message || '') && !syncUnauthorizedShown) {
+        syncUnauthorizedShown = true;
+        showNotif(t('account.syncFailed'), '!');
+      }
+    });
+  }, 2000);
+}
+
+function stopAccountSyncLoop() {
+  if (syncPollTimer) clearInterval(syncPollTimer);
+  syncPollTimer = 0;
 }
 
 function genId() {
@@ -277,6 +746,7 @@ function showNotif(text, icon = '✦') {
 function handleOverlayClick(e) {
   if (e.target === e.currentTarget) {
     const id = e.currentTarget.id;
+    if (id === 'accountModal' && !isAuthenticated()) return;
     if (id === 'playerModal') { closePlayer(); return; }
     closeModal(id);
   }
@@ -284,6 +754,8 @@ function handleOverlayClick(e) {
 
 function closeModal(id) {
   const el = document.getElementById(id);
+  if (!el) return;
+  if (id === 'accountModal' && !isAuthenticated()) return;
   el.querySelector('.modal').classList.add('closing');
   el.classList.add('closing');
   setTimeout(() => {
@@ -447,9 +919,23 @@ function escHtml(s) {
 }
 function sanitizeText(value, max = 500) { return String(value || '').replace(/[\x00-\x1F\x7F]/g, ' ').replace(/<script[\s\S]*?<\/script>/gi, '').replace(/<[^>]*>/g, '').trim().slice(0, max); }
 function sanitizeUrl(value, { allowEmpty = true } = {}) { const raw = String(value || '').trim(); if (!raw) return allowEmpty ? '' : null; try { const url = new URL(raw); if (!['http:', 'https:'].includes(url.protocol)) return null; return url.href; } catch { return null; } }
+function normalizeAnimeSource(source) {
+  if (!source || typeof source !== 'object') return null;
+  const provider = sanitizeText(source.provider, 40);
+  const id = sanitizeText(source.id, 80);
+  if (!provider || !id) return null;
+  return {
+    provider,
+    id,
+    year: Math.max(0, parseInt(source.year) || 0),
+    status: sanitizeText(source.status, 40),
+    updatedAt: Math.max(0, parseInt(source.updatedAt) || 0)
+  };
+}
 
 
 function exportAnimeList() {
+  if (!requireAuth()) return;
   const payload = { app: 'Xilonimeh', version: APP_VERSION, exportedAt: new Date().toISOString(), items: animes };
   const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
   const url = URL.createObjectURL(blob);
@@ -481,22 +967,26 @@ function normalizeImportedItems(value) {
     cover: sanitizeUrl(item.cover) || '',
     notes: sanitizeText(item.notes, 1200),
     rating: Math.max(0, Math.min(10, parseInt(item.rating) || 0)),
-    episodes: []
+    episodes: [],
+    source: normalizeAnimeSource(item.source)
   })).filter(item => item.title || item.titleEn);
 }
 
 function importAnimeList(event) {
+  if (!requireAuth()) { if (event?.target) event.target.value = ''; return; }
   const file = event.target.files && event.target.files[0];
   event.target.value = '';
   if (!file) { showNotif(t('importEmpty'), '!'); return; }
   const reader = new FileReader();
-  reader.onload = () => {
+  reader.onload = async () => {
     try {
       const parsed = JSON.parse(String(reader.result || ''));
       const items = normalizeImportedItems(parsed);
       if (!items) throw new Error('Invalid import file');
       animes = items;
-      save(); updateStats(); renderList();
+      await save({ immediate: true });
+      if (isAccountSession()) await loadLibraryFromApi();
+      else { updateStats(); renderList(); }
       showNotif(t('notifImported'), '⇧');
     } catch (error) {
       showNotif(t('importError'), '!');
@@ -507,6 +997,7 @@ function importAnimeList(event) {
 
 // ─── Quick actions ─────────────────────────────────────────────
 function quickEpAdd(id) {
+  if (!requireAuth()) return;
   const a = animes.find(x => x.id === id);
   if (!a) return;
   a.epWatched = (parseInt(a.epWatched) || 0) + 1;
@@ -520,16 +1011,119 @@ function quickEpAdd(id) {
 }
 
 // ─── Add/Edit ─────────────────────────────────────────────────
+// Anime catalog search
+function setupAnimeCatalogForm() {
+  const input = document.getElementById('animeCatalogSearch');
+  if (!input || input.dataset.bound === 'true') return;
+  input.dataset.bound = 'true';
+  input.addEventListener('input', () => {
+    selectedCatalogAnime = null;
+    clearTimeout(catalogSearchTimer);
+    catalogSearchTimer = setTimeout(() => runCatalogSearch(false), 500);
+  });
+  input.addEventListener('keydown', event => {
+    if (event.key === 'Enter') {
+      event.preventDefault();
+      runCatalogSearch(false);
+    }
+  });
+}
+
+async function runCatalogSearch(force) {
+  const input = document.getElementById('animeCatalogSearch');
+  const status = document.getElementById('animeCatalogStatus');
+  const results = document.getElementById('animeCatalogResults');
+  const query = sanitizeText(input?.value || '', 100);
+  if (!query || query.length < 3) {
+    catalogLastResults = [];
+    if (status) status.textContent = query ? t('catalog.minChars') : '';
+    if (results) results.innerHTML = '';
+    return;
+  }
+
+  const seq = ++catalogSearchSeq;
+  if (status) status.textContent = t('catalog.loading');
+  try {
+    const response = await window.XILONIME_CATALOG.search(query, { force: !!force });
+    if (seq !== catalogSearchSeq) return;
+    catalogLastResults = response.items || [];
+    renderCatalogResults(catalogLastResults);
+    if (status) status.textContent = catalogLastResults.length
+      ? (response.cached ? t('catalog.cached') : (response.source === 'api' ? t('catalog.updatedApi') : t('catalog.updated')))
+      : t('catalog.noResults');
+  } catch (error) {
+    if (seq !== catalogSearchSeq) return;
+    catalogLastResults = [];
+    if (results) results.innerHTML = '';
+    if (status) status.textContent = t('catalog.error');
+  }
+}
+
+function forceCatalogSearch() {
+  runCatalogSearch(true);
+}
+
+function renderCatalogResults(items) {
+  const results = document.getElementById('animeCatalogResults');
+  if (!results) return;
+  results.innerHTML = (items || []).map(item => {
+    const cover = sanitizeUrl(item.cover);
+    const status = item.status ? item.status.replaceAll('_', ' ') : t('catalog.unknown');
+    const meta = [item.year || '', status, item.episodes ? item.episodes + ' ' + t('episode') : ''].filter(Boolean).join(' · ');
+    const image = cover
+      ? '<img src="' + escHtml(cover) + '" alt="" loading="lazy" decoding="async">'
+      : '<span class="catalog-cover-fallback">✦</span>';
+    return '<button class="catalog-result" type="button" data-catalog-id="' + escHtml(item.id) + '" onclick="selectCatalogAnime(&quot;' + escHtml(item.id) + '&quot;)">' +
+      image +
+      '<span class="catalog-result-copy">' +
+        '<b>' + escHtml(item.titleEn || item.title || item.titleRomaji) + '</b>' +
+        '<small>' + escHtml(item.titleRomaji || item.title || '') + '</small>' +
+        '<em>' + escHtml(meta) + '</em>' +
+      '</span>' +
+    '</button>';
+  }).join('');
+}
+
+function selectCatalogAnime(id) {
+  const item = catalogLastResults.find(entry => entry.id === String(id));
+  if (!item) return;
+  selectedCatalogAnime = item;
+  document.querySelectorAll('.catalog-result').forEach(btn => btn.classList.toggle('active', btn.dataset.catalogId === String(id)));
+
+  document.getElementById('fTitle').value = item.title || item.titleRomaji || item.titleEn || '';
+  document.getElementById('fTitleEn').value = item.titleEn || item.titleRomaji || item.title || '';
+  document.getElementById('fGenres').value = (item.genres || []).join(', ');
+  document.getElementById('fEpTotal').value = item.episodes || '';
+  document.getElementById('fCover').value = sanitizeUrl(item.cover) || '';
+  document.getElementById('fStatus').value = 'planned';
+  const status = document.getElementById('animeCatalogStatus');
+  if (status) status.textContent = t('catalog.selected');
+}
+
+function resetCatalogSearch() {
+  catalogLastResults = [];
+  selectedCatalogAnime = null;
+  const input = document.getElementById('animeCatalogSearch');
+  const status = document.getElementById('animeCatalogStatus');
+  const results = document.getElementById('animeCatalogResults');
+  if (input) input.value = '';
+  if (status) status.textContent = '';
+  if (results) results.innerHTML = '';
+}
+
 function openAddModal() {
+  if (!requireAuth()) return;
   editingId = null;
   currentRating = 0;
   document.getElementById('modalTitle').innerHTML = t('addTitle');
   document.getElementById('saveText').textContent = t('save');
   clearForm();
+  setupAnimeCatalogForm();
   document.getElementById('formModal').style.display = 'flex';
 }
 
 function openEdit(id) {
+  if (!requireAuth()) return;
   const a = animes.find(x => x.id === id);
   if (!a) return;
   editingId = id;
@@ -547,10 +1141,13 @@ function openEdit(id) {
   document.getElementById('fNotes').value = a.notes || '';
   currentRating = a.rating || 0;
   setRating(currentRating);
+  setupAnimeCatalogForm();
+  resetCatalogSearch();
   document.getElementById('formModal').style.display = 'flex';
 }
 
 function clearForm() {
+  resetCatalogSearch();
   ['fTitle','fTitleEn','fGenres','fEpWatched','fEpTotal','fSeasonWatched','fSeasonTotal','fCover','fNotes'].forEach(id => {
     document.getElementById(id).value = '';
   });
@@ -558,7 +1155,8 @@ function clearForm() {
   setRating(0);
 }
 
-function saveAnime() {
+async function saveAnime() {
+  if (!requireAuth()) return;
   const title = sanitizeText(document.getElementById('fTitle').value, 160);
   const titleEn = sanitizeText(document.getElementById('fTitleEn').value, 160);
   if (!title && !titleEn) {
@@ -581,6 +1179,17 @@ function saveAnime() {
     notes: sanitizeText(document.getElementById('fNotes').value, 1200),
     rating: currentRating,
   };
+  if (selectedCatalogAnime) {
+    data.source = {
+      provider: selectedCatalogAnime.provider,
+      id: selectedCatalogAnime.id,
+      year: selectedCatalogAnime.year || 0,
+      status: selectedCatalogAnime.status || '',
+      updatedAt: Date.now()
+    };
+  } else if (!editingId) {
+    data.source = null;
+  }
 
   if (editingId) {
     const idx = animes.findIndex(x => x.id === editingId);
@@ -593,13 +1202,15 @@ function saveAnime() {
     showNotif(t('notifAdded'), '🎌');
   }
 
-  save(); updateStats(); renderList();
+  await save({ immediate: true });
+  updateStats(); renderList();
   closeModal('formModal');
 }
 
 
 // ─── VLC player and Discord ─────────────────────────────────
 function openPlayerModal() {
+  if (!requireAuth()) return;
   document.getElementById('playerModal').style.display = 'flex';
   applySettingsLanguage();
 }
@@ -639,6 +1250,7 @@ async function testDiscordActivity() { try { const result = await window.xiloAPI
 
 // ─── Delete ────────────────────────────────────────────────────
 function openDelete(id) {
+  if (!requireAuth()) return;
   const a = animes.find(x => x.id === id);
   if (!a) return;
   deletingId = id;
@@ -647,6 +1259,7 @@ function openDelete(id) {
 }
 
 function confirmDelete() {
+  if (!requireAuth()) return;
   if (!deletingId) return;
   const card = document.getElementById('card-' + deletingId);
   if (card) card.classList.add('card-removing');
@@ -675,13 +1288,27 @@ function loadSamples() {
 // ─── Init ──────────────────────────────────────────────────────
 applySettings();
 applyLanguage();
-showWelcomeIfNeeded();
-if (localStorage.getItem(CHANGELOG_KEY) !== 'seen') { setTimeout(openChangelogModal, 900); }
+renderAccountModal();
+if (isAuthenticated()) {
+  if (isAccountSession()) {
+    startAccountSyncLoop();
+    loadLibraryFromApi().catch(error => showNotif(error.message || t('account.syncFailed'), '!'));
+  }
+  else { updateStats(); renderList(); }
+  afterAuthReady();
+} else {
+  setTimeout(() => openAccountModal({ gate: true }), 250);
+}
+
+document.addEventListener('visibilitychange', () => {
+  if (!document.hidden && isAccountSession()) loadLibraryFromApi({ silent: true }).catch(() => {});
+});
 
 // Keyboard shortcut
 document.addEventListener('keydown', e => {
   if (e.key === 'Escape') {
     ['welcomeModal','formModal','confirmModal','settingsModal','accountModal','announcementModal','changelogModal','playerModal'].forEach(id => {
+      if (id === 'accountModal' && !isAuthenticated()) return;
       if (document.getElementById(id).style.display !== 'none') { if (id === 'playerModal') closePlayer(); else closeModal(id); }
     });
   }

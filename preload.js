@@ -186,7 +186,7 @@ window.addEventListener('DOMContentLoaded', () => {
     <div class="xilo-title">
       <img src="assets/logo.png" alt="">
       <span>${APP_TITLE}</span>
-      <small>Alpha 0.30</small>
+      <small>Alpha 0.32.5</small>
     </div>
     <div class="xilo-window-controls">
       <button class="xilo-window-button minimize" type="button" data-action="minimize" title="Minimize" aria-label="Minimize"></button>

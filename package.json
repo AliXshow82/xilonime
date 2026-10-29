@@ -1,6 +1,6 @@
 {
   "name": "xilonime",
-  "version": "0.30.0-alpha.0",
+  "version": "0.32.5-alpha.0",
   "description": "ژایلونیمه - alpha desktop anime tracker with persistent local storage",
   "main": "main.js",
   "license": "SEE LICENSE IN LICENSE",
@@ -44,6 +44,8 @@
     "nsis": {
       "installerIcon": "assets/icon.ico",
       "uninstallerIcon": "assets/icon.ico",
+      "installerSidebar": "build/installer-sidebar.bmp",
+      "uninstallerSidebar": "build/installer-sidebar.bmp",
       "oneClick": false,
       "allowToChangeInstallationDirectory": true,
       "createDesktopShortcut": true,

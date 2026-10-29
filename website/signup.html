@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ساخت حساب | ژایلونیمه</title>
+  <link rel="stylesheet" href="assets/css/style.css?v=0.32.5-sync2">
+</head>
+<body class="auth-page">
+  <div class="grid"></div>
+  <div class="noise"></div>
+  <main class="auth-wrap">
+    <a class="auth-brand" href="index.html">
+      <img src="media/logo.png" alt="">
+      <span><b>ژایلونیمه</b><small>Alpha 0.32.5</small></span>
+    </a>
+    <form class="auth-card" id="signupForm">
+      <span class="eyebrow small">Account</span>
+      <h1>ساخت حساب</h1>
+      <p>حساب ژایلونیمه برای ذخیره لیست انیمه‌ها روی دیتابیس مرکزی استفاده می‌شود.</p>
+      <div class="social-login-box">
+        <div class="social-title">Sign up with</div>
+        <div class="social-grid">
+          <button class="social-auth-btn google-login-btn" id="siteGoogleBtn" type="button">
+            <span class="google-g">G</span><span>Google</span>
+          </button>
+          <button class="social-auth-btn discord-login-btn" id="siteDiscordBtn" type="button">
+            <span>Discord</span>
+          </button>
+        </div>
+        <div class="auth-separator"><span></span><b>Or</b><span></span></div>
+      </div>
+      <label>Username</label>
+      <input type="text" id="signupName" placeholder="xilo_user" autocomplete="username" required>
+      <label>ایمیل</label>
+      <input type="email" id="signupEmail" placeholder="you@example.com" autocomplete="email" required>
+      <label>رمز عبور</label>
+      <input type="password" id="signupPassword" placeholder="••••••••" autocomplete="new-password" required>
+      <button class="btn btn-primary" type="submit">ساخت حساب</button>
+      <a class="auth-link" href="login.html">حساب داری؟ ورود</a>
+    </form>
+  </main>
+  <script type="module" src="assets/js/auth.js?v=0.32.5-sync2"></script>
+</body>
+</html>

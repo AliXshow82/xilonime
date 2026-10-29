@@ -19,3 +19,8 @@ anime_vault_backup_*.json
 Thumbs.db
 .vscode/
 .idea/
+
+# Runtime server data (users, tokens)
+data/xilonime-db.json
+server/data/
+server/.env

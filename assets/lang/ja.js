@@ -3,7 +3,7 @@ window.XILONIME_LANGS["ja"] = {
   "dir": "ltr",
   "htmlLang": "ja",
   "appName": "Xilonimeh",
-  "subtitle": "Alpha 0.30 · 私の個人アニメリスト",
+  "subtitle": "Alpha 0.32.5 · 私の個人アニメリスト",
   "addAnime": "アニメを追加",
   "export": "エクスポート",
   "import": "インポート",
@@ -38,7 +38,7 @@ window.XILONIME_LANGS["ja"] = {
   "welcomeKicker": "アニメコミュニティのために制作",
   "welcomeHeadline": "あなたのアニメ世界の個人ノート",
   "welcomeCopy": "このアプリはアニメ視聴を整理するために作られました。まだ初期版ですが、少しずつ美しく便利になっていきます。",
-  "welcomeVersion": "現在のバージョンは <span class=\"version-pill\">Alpha 0.30</span> です。初回インストールは空のリストから始まります。「アニメを追加」で最初の項目を追加してください。",
+  "welcomeVersion": "現在のバージョンは <span class=\"version-pill\">Alpha 0.32.5</span> です。初回インストールは空のリストから始まります。「アニメを追加」で最初の項目を追加してください。",
   "later": "あとで",
   "startAdd": "開始して追加",
   "addTitle": "<span>新しいアニメ</span>を追加",
@@ -107,7 +107,7 @@ window.XILONIME_LANGS["ja"] = {
     "playerTitle": "オンライン再生",
     "playerSub": "VLCのように直接動画リンクを再生",
     "accountTitle": "アカウント",
-    "accountSub": "ログインと登録は近日対応",
+    "accountSub": "デスクトップ版とWeb版のデータは、共通のXilonimeh APIと中央データベースで同期されます。",
     "discordTitle": "Discord Activity",
     "discordSub": "Discordに視聴状態を表示",
     "compact": "コンパクト",
@@ -117,7 +117,9 @@ window.XILONIME_LANGS["ja"] = {
     "accountButton": "アカウント",
     "discordTest": "接続テスト",
     "done": "完了",
-    "accountAccess": "ログイン / 登録"
+    "accountAccess": "ログイン / 登録",
+    "accountSettingsTitle": "アカウント設定",
+    "accountSettingsSub": "マイアニメリスト内で名前、メール、電話番号、パスワードを変更できます。"
   },
   "player": {
     "title": "VLC再生",
@@ -146,27 +148,64 @@ window.XILONIME_LANGS["ja"] = {
   },
   "account": {
     "title": "Xilonimeh アカウント",
-    "headline": "ログインと登録",
-    "sub": "この機能は近日対応予定です。",
+    "headline": "ログインが必要です",
+    "sub": "Xilonimehを使う前にログインまたは登録してください。",
+    "gateNote": "ログイン後にリスト、設定、プレイヤーが使えます。",
     "login": "ログイン",
-    "signup": "登録"
+    "signup": "登録",
+    "googleFailed": "Googleログインに失敗しました",
+    "googleNotConfigured": "Googleログインが設定されていません",
+    "username": "ユーザー名",
+    "or": "または",
+    "loginWith": "ログイン方法",
+    "email": "メール",
+    "password": "パスワード",
+    "currentPassword": "現在のパスワード",
+    "phone": "電話番号",
+    "newPassword": "新しいパスワード",
+    "saveSettings": "アカウントを保存",
+    "displayName": "表示名",
+    "loginSubmit": "ログイン",
+    "guestSubmit": "ゲストとして続行",
+    "signupSubmit": "アカウント作成",
+    "verifyNote": "メールに送信されたコードを入力してください。",
+    "verifyDevNote": "開発用コード: {code}",
+    "verifyCode": "認証コード",
+    "verifySubmit": "認証して作成",
+    "verifyBack": "戻る",
+    "verifySent": "認証コードを送信しました",
+    "verifyInvalid": "認証コードが正しくありません",
+    "loggedIn": "ログイン中",
+    "guest": "ゲスト",
+    "localOnly": "ローカルモード",
+    "logout": "ログアウト",
+    "loginRequired": "先にログインまたは登録してください",
+    "loginSuccess": "おかえりなさい",
+    "loggedOut": "ログアウトしました",
+    "invalid": "有効なメールとパスワードを入力してください",
+    "syncFailed": "アカウントデータを同期できませんでした",
+    "settingsSaved": "アカウントを更新しました",
+    "passwordShort": "パスワードは6文字以上にしてください",
+    "currentPasswordRequired": "先に現在のパスワードを入力してください",
+    "guestSuccess": "ゲストモードを有効にしました",
+    "accountOnly": "この設定はクラウドアカウント専用です"
   },
   "soon": {
-    "kicker": "近日公開",
+    "kicker": "ブログ",
     "title": "ブログと新作アニメ紹介",
-    "sub": "ニュース、おすすめ、アニメ紹介は今後のバージョンで追加されます。",
-    "badge": "近日公開"
+    "sub": "ニュース、レコメンド、アニメ紹介はサイトのブログで確認できます。",
+    "badge": "ブログを開く"
   },
   "announcement": {
     "title": "お知らせ <span>と変更履歴</span>",
     "cardTitle": "テストお知らせ",
     "cardText": "このエリアは今後のサーバー配信メッセージ用です。現在はローカルのテスト表示です。",
-    "changeTitle": "変更履歴 - Alpha 0.30",
+    "changeTitle": "変更履歴 - Alpha 0.32.5",
     "changeText": "Alpha 0.20 から現在のビルドまでの変更を確認できます。",
     "changeButton": "変更履歴を開く"
   },
   "changelog": {
-    "title": "変更履歴 <span>Alpha 0.20 - 0.30</span>",
+    "title": "変更履歴 <span>Alpha 0.20 - 0.32.5</span>",
     "done": "OK",
     "versions": [
       {
@@ -198,9 +237,33 @@ window.XILONIME_LANGS["ja"] = {
           "ブログ/新作アニメ紹介エリアを coming soon として追加。",
           "アプリの安全性を改善。",
           "弱い環境でも動きやすいよう背景とアニメーションを軽量化。"
-        
+        ]
+      },
+      {
+        "version": "Alpha 0.32.5",
+        "items": [
+          "ブログエリアを coming soon からサイトブログへのリンクに変更。",
+          "デスクトップ版とWeb版の共有データ用アカウント導線を準備。",
+          "アニメ検索は Xilonimeh API を優先し、AniList を fallback に変更。",
+          "2日ごと更新の共通データベース/API構成を追加。"
         ]
       }
     ]
+  },
+  "catalog": {
+    "title": "アニメデータベース",
+    "sub": "AniList で検索し、タイトル、カバー、年、ステータス、話数を入力します。画像はダウンロードしません。",
+    "searchLabel": "アニメデータベース検索",
+    "searchPlaceholder": "3文字以上入力、例: Naruto",
+    "refresh": "更新",
+    "minChars": "3文字以上入力してください。",
+    "loading": "AniList を検索中...",
+    "cached": "週間ローカルキャッシュから読み込みました。",
+    "updated": "AniList から更新しました。",
+    "noResults": "アニメが見つかりません。",
+    "error": "アニメデータベースに接続できません。",
+    "selected": "データベースからアニメ情報を入力しました。",
+    "unknown": "不明",
+    "updatedApi": "Xilonimeh データベースから更新しました。"
   }
 };
